@@ -4,6 +4,7 @@ import { BiCoinStack } from "react-icons/bi";
 
 const HeroSection = () => {
   return (
+    <section id='home'>
     <div className="bg-gradient-to-b from-[#1E3A8A] to-[#0D6EFD] px-6 sm:px-10 py-16 flex flex-col items-center justify-center gap-8 font-bricolage text-white text-center">
 
       <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-snug sm:leading-tight">
@@ -14,7 +15,7 @@ const HeroSection = () => {
 
       <p className="text-sm sm:text-base md:text-lg text-[#E0F2FE]/90 max-w-3xl leading-relaxed px-2">
         It’s easy to get paid back, send money straight globally. <br className="hidden sm:block" />
-        Manage your money anytime, anywhere — take control of your <br className="hidden sm:block" />
+        Manage your money anytime, anywhere take control of your <br className="hidden sm:block" />
         finances effortlessly and securely. Get faster access to payments, <br className="hidden sm:block" />
         pay contactless in-store, and more.
       </p>
@@ -35,6 +36,7 @@ const HeroSection = () => {
         </button>
       </div>
     </div>
+    </section>
   )
 }
 

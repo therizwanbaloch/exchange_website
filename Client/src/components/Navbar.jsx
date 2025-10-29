@@ -2,14 +2,14 @@ import React from "react";
 
 const Navbar = () => {
   return (
-    <nav className="bg-[#1E3A8A] text-white px-8 py-3 flex items-center justify-between shadow-md font-bricolage">
+    <nav className="sticky top-0 z-50 bg-[#1E3A8A] text-white px-8 py-3 flex items-center justify-between shadow-md font-bricolage">
       <h1 className="font-bold text-2xl tracking-wide">ExchangerPk</h1>
 
       <ul className="flex gap-8 text-lg font-medium">
-        <li className="cursor-pointer hover:text-[#3B82F6] transition">Home</li>
-        <li className="cursor-pointer hover:text-[#3B82F6] transition">Features</li>
-        <li className="cursor-pointer hover:text-[#3B82F6] transition">How We Work</li>
-        <li className="cursor-pointer hover:text-[#3B82F6] transition">Contacts</li>
+        <li className="cursor-pointer hover:text-[#3B82F6] transition"><a href="#home">Home</a></li>
+        <li className="cursor-pointer hover:text-[#3B82F6] transition"><a href="#features">Features</a></li>
+        <li className="cursor-pointer hover:text-[#3B82F6] transition"><a href="#how-we-work">How We Work</a></li>
+        <li className="cursor-pointer hover:text-[#3B82F6] transition"><a href="#contact">Contact</a></li>
       </ul>
 
       <div className="flex gap-4">

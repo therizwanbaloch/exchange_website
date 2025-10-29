@@ -1,5 +1,5 @@
 @import "tailwindcss";
 
-body {
-  @apply font-bricolage;
+html {
+  scroll-behavior: smooth;
 }

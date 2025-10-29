@@ -2,7 +2,7 @@ import React from "react";
 
 const Card = ({ icon, title, description }) => {
   return (
-    <div className="bg-white/60 backdrop-blur-md border border-white/30 shadow-xl p-8 sm:p-10 rounded-2xl text-center hover:scale-105 transition-transform duration-300 flex flex-col items-center justify-center min-h-[300px]">
+    <div className="bg-[#F0F8FF] backdrop-blur-md border border-white/30 shadow-xl p-8 sm:p-10 rounded-2xl text-center hover:scale-105 transition-transform duration-300 flex flex-col items-center justify-center min-h-[300px]">
       <div className="mb-5 flex justify-center items-center text-5xl sm:text-6xl">
         {icon}
       </div>
