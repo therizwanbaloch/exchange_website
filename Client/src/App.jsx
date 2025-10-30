@@ -1,15 +1,30 @@
-import React from 'react'
-import Navbar from './components/Navbar'
-import HeroSection from './components/HeroSection'
-import HowWeWork from './components/HowWeWork'
-import LandingPage from './pages/LandingPage'
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+// import { useSelector } from "react-redux";
+
+import LandingPage from "./pages/LandingPage";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import UserDashboard from "./pages/UserDashboard";
 
 const App = () => {
-  return (
-    <div>
-      <LandingPage/>
-    </div>
-  )
-}
+  // const userData = useSelector((state) => state.user?.userData);
+  const userData = null
 
-export default App
+  return (
+    <Routes>
+      <Route path="/" element={userData ? <UserDashboard /> : <LandingPage />} />
+      <Route
+        path="/login"
+        element={userData ? <Navigate to="/" /> : <Login />}
+      />
+      <Route
+        path="/register"
+        element={userData ? <Navigate to="/" /> : <Register />}
+      />
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
+  );
+};
+
+export default App;
