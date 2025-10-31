@@ -10,7 +10,7 @@ import authRouter from "./Routes/authRoutes.js";
 // import rateRouter from "./routes/rateRoutes.js";
 // import adminRouter from "./routes/adminRoutes.js";
 // import walletRouter from "./routes/walletRoutes.js";
-// import transactionRouter from "./routes/transactionRoutes.js";
+import transactionRouter from "./Routes/transactionRoutes.js";
 // import requestRouter from "./routes/requestRoutes.js";
 
 dotenv.config();
@@ -32,7 +32,7 @@ app.use("/api/auth", authRouter);
 // app.use("/api/rates", rateRouter);
 // app.use("/api/admin", adminRouter);
 // app.use("/api/wallet", walletRouter);
-// app.use("/api/transactions", transactionRouter);
+app.use("/api/transactions", transactionRouter);
 // app.use("/api/requests", requestRouter);
 
 

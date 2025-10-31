@@ -1,16 +1,29 @@
 import React, { useState } from "react";
-import { FiHome, FiSend, FiUserPlus, FiDownload, FiUpload, FiRepeat, FiGift, FiTrendingUp, FiUsers, FiHelpCircle, FiMenu, FiX } from "react-icons/fi";
+import {
+  FiHome,
+  FiSend,
+  FiUserPlus,
+  FiDownload,
+  FiUpload,
+  FiRepeat,
+  FiGift,
+  FiTrendingUp,
+  FiUsers,
+  FiHelpCircle,
+  FiMenu,
+  FiX,
+} from "react-icons/fi";
 
 const DashboardSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const menuItems = [
     { name: "Dashboard", icon: <FiHome /> },
-    { name: "Send Money", icon: <FiSend /> },
-    { name: "Request Money", icon: <FiUserPlus /> },
     { name: "Deposit", icon: <FiDownload /> },
     { name: "Withdraw", icon: <FiUpload /> },
     { name: "Exchange", icon: <FiRepeat /> },
+    { name: "Send Money", icon: <FiSend /> },
+    { name: "Request Money", icon: <FiUserPlus /> },
   ];
 
   return (
@@ -39,7 +52,7 @@ const DashboardSidebar = () => {
             </h2>
           </div>
 
-         {/* menu  */}
+          {/* menu  */}
           <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-100">
             <ul className="p-3 space-y-2">
               {menuItems.map((item, index) => (
