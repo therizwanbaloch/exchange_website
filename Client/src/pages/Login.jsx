@@ -5,18 +5,19 @@ import { useNavigate, Link } from "react-router-dom";
 // import { setUserData } from "../redux/userSlice";
 
 const Login = () => {
-  const [identifier, setIdentifier] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-//   const dispatch = useDispatch();
+  // const dispatch = useDispatch();
+  const URL = import.meta.env.VITE_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
-    if (!identifier) {
-      setError("Please enter your email or username");
+    if (!email) {
+      setError("Please enter your email");
       return;
     }
 
@@ -27,12 +28,19 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        { identifier, password },
-        { withCredentials: true }
+        `${URL}/auth/login`,
+        { email, password },
       );
 
-      //   dispatch(setUserData(response.data));
+      
+      const token = response.data?.token;
+
+      if (token) {
+        localStorage.setItem("token", token); // store JWT
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; // attach automatically
+      }
+
+      // dispatch(setUserData(response.data.user));
       navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
@@ -55,13 +63,14 @@ const Login = () => {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <input
-            type="text"
-            placeholder="Email or Username"
-            value={identifier}
-            onChange={(e) => setIdentifier(e.target.value)}
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full border border-gray-300 rounded-lg px-4 py-3
                        focus:outline-none focus:ring-2 focus:ring-blue-500
                        focus:border-blue-500 transition shadow-sm"
+            required
           />
 
           <input
@@ -72,6 +81,7 @@ const Login = () => {
             className="w-full border border-gray-300 rounded-lg px-4 py-3
                        focus:outline-none focus:ring-2 focus:ring-blue-500
                        focus:border-blue-500 transition shadow-sm"
+            required
           />
 
           <button

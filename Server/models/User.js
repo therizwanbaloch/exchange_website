@@ -10,7 +10,6 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  country: { type: String },
   wallet: walletSchema,
   createdAt: { type: Date, default: Date.now }
 });

@@ -6,12 +6,12 @@ import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
   const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   // const dispatch = useDispatch();
+  const URL = import.meta.env.VITE_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,17 +19,18 @@ const Register = () => {
 
     try {
       const response = await axios.post(
-        "/api/auth/register",
-        {
-          name,
-          username,
-          email,
-          password,
-        },
-        { withCredentials: true }
+        `${URL}/auth/register`,
+        { name, email, password },
       );
 
-      // dispatch(setUserData(response.data));
+  
+      const token = response.data?.token;
+      if (token) {
+        localStorage.setItem("token", token);
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      }
+
+      // dispatch(setUserData(response.data.user));
       navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");
@@ -37,7 +38,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br  from-blue-50 to-blue-100 px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 px-4 py-12">
       <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl">
         <h2 className="text-3xl font-bold mb-6 text-blue-700 text-center">
           Create Account
@@ -54,15 +55,6 @@ const Register = () => {
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-
-          <input
-            type="text"
-            placeholder="Username"
-            required
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
             className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 

@@ -1,17 +1,38 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
-const transactionSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  type: { type: String, enum: ["deposit", "withdraw", "send", "exchange"], required: true },
-  fromWallet: String,
-  toWallet: String,
-  amount: { type: Number, required: true },
-  convertedAmount: Number,
-  rate: Number,
-  receiverEmail: String,
-  message: String,
-  status: { type: String, default: "pending" },
-  createdAt: { type: Date, default: Date.now }
-});
+const transactionSchema = new mongoose.Schema(
+  {
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 
-module.exports = mongoose.model("Transaction", transactionSchema);
+    
+    type: {
+      type: String,
+      enum: ["deposit", "withdraw", "exchange"],
+      required: true,
+    },
+
+
+    fromWallet: { type: String },
+    toWallet: { type: String },
+
+  
+    amount: { type: Number, required: true },
+    convertedAmount: { type: Number },
+    rate: { type: Number },
+
+    
+    transactionId: { type: String },
+    paymentApp: { type: String },
+    
+    status: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
+    },
+  },
+  { timestamps: true } // Adds createdAt & updatedAt automatically
+);
+
+const Transaction = mongoose.model("Transaction", transactionSchema);
+
+export default Transaction;
