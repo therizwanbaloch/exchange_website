@@ -6,6 +6,9 @@ import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import UserDashboard from "./Dashpage/UserDashboard";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminDashboard from "./pages/admin/adminDashboard/AdminDashboard";
+
 
 const App = () => {
   // const userData = useSelector((state) => state.user?.userData);
@@ -23,6 +26,16 @@ const App = () => {
         element={userData ? <Navigate to="/" /> : <Register />}
       />
       <Route path="*" element={<Navigate to="/" />} />
+
+      <Route
+        path="/admin-login"
+        element={<AdminLogin/>}
+      />
+
+      <Route
+        path="/admin"
+        element={<AdminDashboard/>}
+      />
     </Routes>
   );
 };

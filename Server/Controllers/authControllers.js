@@ -2,10 +2,13 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-// -------------------- REGISTER --------------------
+
 export const Register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
+
+    if (!email || !password || !name)
+      return res.status(400).json({ message: "All fields are required" });
 
     
     const existingUser = await User.findOne({ email });
@@ -45,7 +48,7 @@ export const Register = async (req, res) => {
   }
 };
 
-// -------------------- LOGIN --------------------
+
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
