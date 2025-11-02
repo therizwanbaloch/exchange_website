@@ -1,13 +1,10 @@
 import express from "express";
 import isAuth from "../middlewares/isAuth.js";
-import { getCurrentUser, editProfile, getOtherUsers } from "../controllers/userController.js";
+import { getBalances } from "../Controllers/walletController.js";
 
 const walletRouter = express.Router();
 
-walletRouter.post("/send", isAuth, getCurrentUser);
-walletRouter.post("/request", isAuth, getOtherUsers);
-walletRouter.post("/exchange", isAuth, editProfile);
-walletRouter.get("/history", isAuth, )
+walletRouter.get("/balances", isAuth, getBalances);
 
 
 export default walletRouter;
