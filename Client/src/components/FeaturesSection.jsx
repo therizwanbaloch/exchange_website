@@ -6,7 +6,7 @@ import { FaUsers } from "react-icons/fa6";
 import { GiWallet } from "react-icons/gi";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { TbTransactionDollar } from "react-icons/tb";
-import Card from "./Card";
+import Card from "../components/Card";
 import UserDataCard from "./UsersDataCard";
 
 const FeaturesSection = () => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import EfficientDiv from './EfficientDiv';
+import EfficientDiv from '../components/EfficientDiv';
 import SponserDiv from './SponserDiv';
 
 const SponserArea = () => {

@@ -1,19 +1,34 @@
-import React from 'react'
-import AdminScrollBar from './adminScrollBar'
-import DataSection from '../DashComponents/DataSection'
+import React from 'react';
+import AdminScrollBar from './adminScrollBar';
+import DataSection from '../DashComponents/DataSection';
+import PendingDeposits from '../DashComponents/PendingDeposits';
+import PendingWithdraw from '../DashComponents/PendingWithdraw';
+import LastSixUsers from '../DashComponents/LastSixUsers';
 
 const AdminDashboard = () => {
   return (
-    
-<div className="grid grid-cols-6 grid-rows-7 gap-4">
-    <div className="col-span-2 row-span-7"><AdminScrollBar/></div>
-    <div className="col-span-4 col-start-3"><DataSection/></div>
-    <div className="col-span-4 col-start-3 row-start-3">3</div>
-    <div className="col-span-4 col-start-3 row-start-4">5</div>
-    <div className="col-span-4 row-span-3 col-start-3 row-start-5">6</div>
-</div>
-    
-  )
-}
+    <div className="flex min-h-screen bg-gray-100">
+      <AdminScrollBar />
 
-export default AdminDashboard
+      <main className="flex-1 lg:ml-64 p-6 space-y-8">
+        <section>
+          <DataSection />
+        </section>
+
+        <section>
+          <PendingDeposits />
+        </section>
+
+        <section>
+          <PendingWithdraw />
+        </section>
+
+        <section>
+          <LastSixUsers />
+        </section>
+      </main>
+    </div>
+  );
+};
+
+export default AdminDashboard;

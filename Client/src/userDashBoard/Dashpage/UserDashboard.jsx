@@ -1,9 +1,9 @@
 import React from 'react'
-import DashboardSidebar from '../userDashBoard/Dashtab Components/DashboardSidebar'
-import DashboardNav from '../userDashBoard/Dashtab Components/DashboardNav'
-import DashActivity from '../userDashBoard/Dashtab Components/DashActivity'
-import Steps from '../userDashBoard/Dashtab Components/Steps'
-import WalletCard from '../userDashBoard/Dashtab Components/WalletCard'
+import DashboardSidebar from '../Dashtab Components/DashboardSidebar'
+import DashboardNav from '../Dashtab Components/DashboardNav'
+import DashActivity from '../Dashtab Components/DashActivity'
+import Steps from '../Dashtab Components/Steps'
+import WalletCard from '../Dashtab Components/WalletCard'
 
 const UserDashboard = () => {
   return (

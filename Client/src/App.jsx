@@ -8,14 +8,20 @@ import Register from "./pages/Register";
 import UserDashboard from "./Dashpage/UserDashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/adminDashboard/AdminDashboard";
-
+import ManageUsers from "./pages/admin/ManageUsers";
+import Deposits from "./pages/admin/Deposits";
+import Withdrawals from "./pages/admin/Withdrawals";
+import CustomRates from "./pages/admin/CustomRates";
+import DepositMethods from "./pages/admin/DepositMethods";
+import SupportTickets from "./pages/admin/SupportTickets";
 
 const App = () => {
   // const userData = useSelector((state) => state.user?.userData);
-  const userData = true
+  const userData = true;
 
   return (
     <Routes>
+      
       <Route path="/" element={userData ? <UserDashboard /> : <LandingPage />} />
       <Route
         path="/login"
@@ -27,15 +33,15 @@ const App = () => {
       />
       <Route path="*" element={<Navigate to="/" />} />
 
-      <Route
-        path="/admin-login"
-        element={<AdminLogin/>}
-      />
-
-      <Route
-        path="/admin"
-        element={<AdminDashboard/>}
-      />
+      
+      <Route path="/admin-login" element={<AdminLogin />} />
+      <Route path="/admin" element={<AdminDashboard />} />
+      <Route path="/admin/manage-users" element={<ManageUsers />} />
+      <Route path="/admin/deposits" element={<Deposits />} />
+      <Route path="/admin/withdrawals" element={<Withdrawals />} />
+      <Route path="/admin/custom-rates" element={<CustomRates />} />
+      <Route path="/admin/deposit-methods" element={<DepositMethods />} />
+      <Route path="/admin/support-tickets" element={<SupportTickets />} />
     </Routes>
   );
 };
