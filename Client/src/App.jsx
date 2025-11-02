@@ -17,12 +17,14 @@ import SupportTickets from "./pages/admin/SupportTickets";
 
 const App = () => {
   // const userData = useSelector((state) => state.user?.userData);
-  const userData = true;
+  const userData = null
 
   return (
     <Routes>
       
-      <Route path="/" element={userData ? <UserDashboard /> : <LandingPage />} />
+      {/* <Route path="/" element={userData ? <UserDashboard /> : <LandingPage />} /> */}
+      <Route path="/" element={<UserDashboard/>} />
+
       <Route
         path="/login"
         element={userData ? <Navigate to="/" /> : <Login />}

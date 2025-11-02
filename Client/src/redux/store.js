@@ -1,12 +1,10 @@
-import { configureStore } from '@reduxjs/toolkit'
-import usersReducer from './usersReducer'
-// import postsReducer from './postsReducer'
+import { configureStore } from "@reduxjs/toolkit";
+import balanceReducer from "./slices/balanceSlice";
 
 const store = configureStore({
   reducer: {
-    users: usersReducer,
-    // posts: postsReducer,
+    balance: balanceReducer,
   },
-})
+});
 
-export default store
+export default store;
