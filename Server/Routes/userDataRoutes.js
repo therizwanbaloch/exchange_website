@@ -1,10 +1,9 @@
 import express from "express";
-import isAuth from "../middlewares/isAuth.js";
+import isAuth from "../Middlewares/isAuth"
 import { getUserData } from "../Controllers/userDataConroller.js";
 
 const userDataRouter = express.Router();
 
-walletRouter.get("/user-data", isAuth, getUserData);
-
+userDataRouter.get("/user-data", isAuth, getUserData)
 
 export default userDataRouter;

@@ -33,7 +33,7 @@ app.use("/api/auth", authRouter);
 // app.use("/api/support", supportRouter);
 // app.use("/api/rates", rateRouter);
 // app.use("/api/admin", adminRouter);
-app.use("/api/users", getUserData );
+app.use("/api/users", getUserData);
 app.use("/api/transactions", transactionRouter);
 
 app.use("/api/admin", adminRouter)

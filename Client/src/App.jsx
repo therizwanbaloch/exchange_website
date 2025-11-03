@@ -5,7 +5,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import UserDashboard from "./Dashpage/UserDashboard";
+import UserDashboard from "./pages/Dashpage/UserDashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/adminDashboard/AdminDashboard";
 import ManageUsers from "./pages/admin/ManageUsers";
@@ -14,16 +14,16 @@ import Withdrawals from "./pages/admin/Withdrawals";
 import CustomRates from "./pages/admin/CustomRates";
 import DepositMethods from "./pages/admin/DepositMethods";
 import SupportTickets from "./pages/admin/SupportTickets";
+import { useSelector } from "react-redux";
+import useFetchUser from "./hooks/useFetchUser";
 
 const App = () => {
-  // const userData = useSelector((state) => state.user?.userData);
-  const userData = null
-
+  const user = useFetchUser()
+  const userData = useSelector((state) => state.user?.user);
   return (
     <Routes>
       
-      {/* <Route path="/" element={userData ? <UserDashboard /> : <LandingPage />} /> */}
-      <Route path="/" element={<UserDashboard/>} />
+      <Route path="/" element={userData ? <UserDashboard /> : <LandingPage />} />
 
       <Route
         path="/login"
