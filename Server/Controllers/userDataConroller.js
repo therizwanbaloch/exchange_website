@@ -1,6 +1,6 @@
-import User from "../models/User.js"
+import User from "../models/User.js";
 
-export const getBalances = async (req, res) => {
+export const getUserData = async (req, res) => {
   const userId = req.user?.id; 
 
   if (!userId) {
@@ -12,7 +12,7 @@ export const getBalances = async (req, res) => {
 
   try {
     
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select("-password");
 
     if (!user) {
       return res.status(404).json({
@@ -22,15 +22,13 @@ export const getBalances = async (req, res) => {
     }
 
     
-    const { wallet } = user;
-
     return res.status(200).json({
       success: true,
-      balances: wallet, 
+      user,
     });
   } catch (err) {
-    console.error("Error fetching balances:", err);
-    
+    console.error("Error fetching user data:", err);
+
     return res.status(500).json({
       success: false,
       message: "Server error. Please try again later.",

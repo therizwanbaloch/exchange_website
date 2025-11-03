@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-// import { useDispatch } from "react-redux";
-// import { setUserData } from "../redux/userSlice";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../redux/slices/userSlice";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const URL = import.meta.env.VITE_API_URL;
 
   const handleSubmit = async (e) => {
@@ -27,20 +27,20 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post(
-        `${URL}/auth/login`,
-        { email, password },
-      );
+      const response = await axios.post(`${URL}/auth/login`, { email, password });
+
+      const { token, user } = response.data;
 
       
-      const token = response.data?.token;
-
       if (token) {
-        localStorage.setItem("token", token); // store JWT
-        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; // attach automatically
+        localStorage.setItem("token", token);
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       }
 
-      // dispatch(setUserData(response.data.user));
+      
+      dispatch(setUserData(user));
+
+      
       navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
