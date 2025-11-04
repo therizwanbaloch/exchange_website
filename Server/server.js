@@ -32,7 +32,7 @@ app.use("/api/auth", authRouter);
 // app.use("/api/user", userRouter);
 // app.use("/api/support", supportRouter);
 app.use("/api/rates", rateRouter);
-// app.use("/api/admin", adminRouter);
+app.use("/api/admin", adminRouter);
 app.use("/api/users", userdataRouter);
 app.use("/api/transactions", transactionRouter);
 

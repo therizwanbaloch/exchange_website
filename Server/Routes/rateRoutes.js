@@ -1,6 +1,7 @@
 import express from "express";
 import { isAuth} from "../Middlewares/isAuth.js";
-import { getRates } from "../Controllers/rateControllers.js";
+import { createRate, getRates } from "../Controllers/rateControllers.js";
+import { isAdmin } from "../Middlewares/isAdmin.js";
 
 
 const rateRouter = express.Router();
@@ -12,7 +13,7 @@ rateRouter.get("/get-rates",isAuth, getRates);
 // rateRouter.get("/:from/:to", getRateByPair);
 
 // Admin: create new rate
-// rateRouter.post("/add-rate", isAdmin, createRate);
+rateRouter.post("/add-rate", isAdmin, createRate);
 
 // Admin: update rate
 // rateRouter.put("/:id", isAuth, isAdmin, updateRate);
