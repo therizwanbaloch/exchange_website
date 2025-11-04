@@ -6,14 +6,14 @@ import { setUserData } from "../redux/slices/userSlice";
 const useFetchUser = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user?.user);
+  const URL = import.meta.env.VITE_API_URL
 
   useEffect(() => {
     const token = localStorage.getItem("token");
 
     if (!user && token) {
       axios
-        .get("http://localhost:5000/api/auth/user", {
-          headers: { Authorization: `Bearer ${token}` },
+        .get(`${URL}/users/user-data`, {
         })
         .then((response) => {
           dispatch(setUserData(response.data.user));

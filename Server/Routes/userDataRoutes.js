@@ -6,4 +6,5 @@ const userdataRouter = express.Router();
 
 userdataRouter.get("/user-data", isAuth, getUserData)
 
+
 export default userdataRouter;

@@ -18,7 +18,7 @@ import { useSelector } from "react-redux";
 import useFetchUser from "./hooks/useFetchUser";
 
 const App = () => {
-  const user = useFetchUser()
+ useFetchUser()
   const userData = useSelector((state) => state.user?.user);
   return (
     <Routes>

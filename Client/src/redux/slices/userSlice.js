@@ -14,6 +14,9 @@ const userSlice = createSlice({
     clearUserData: (state) => {
       state.user = null;
     },
+    setTransactions: (state, action) => {
+      state.user = action.payload;
+    },
   },
 });
 
