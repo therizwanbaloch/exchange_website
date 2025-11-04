@@ -1,9 +1,9 @@
 import express from "express";
-import isAuth from "../Middlewares/isAuth"
-import { getUserData } from "../Controllers/userDataConroller.js";
+import { getUserData } from "../Controllers/userDataController.js";
+import isAuth from "../middlewares/isAuth.js";
 
-const userDataRouter = express.Router();
+const userdataRouter = express.Router();
 
-userDataRouter.get("/user-data", isAuth, getUserData)
+userdataRouter.get("/user-data", isAuth, getUserData)
 
-export default userDataRouter;
+export default userdataRouter;
