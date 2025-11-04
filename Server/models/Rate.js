@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const rateSchema = new mongoose.Schema({
   fromCurrency: { type: String, required: true },
@@ -7,4 +7,4 @@ const rateSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model("Rate", rateSchema);
+export default mongoose.model("Rate", rateSchema);

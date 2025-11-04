@@ -5,7 +5,7 @@ import User from "../models/User.js";
 export const deposit = async (req, res) => {
   try {
     const userId = req.user?.id;
-    const { amount } = req.body;
+    const { amount, wallet } = req.body;
 
     
     if (!userId) {
@@ -15,11 +15,19 @@ export const deposit = async (req, res) => {
       });
     }
 
-
+  
     if (!amount || isNaN(amount) || amount <= 0) {
       return res.status(400).json({
         success: false,
         message: "Please enter a valid amount greater than zero.",
+      });
+    }
+
+    
+    if (!wallet || !["PKR", "USD", "GBP"].includes(wallet)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please select a valid wallet (PKR, USD, or GBP).",
       });
     }
 
@@ -32,16 +40,15 @@ export const deposit = async (req, res) => {
       });
     }
 
-    
     if (!user.wallet) {
       user.wallet = { PKR: 0, USD: 0, GBP: 0 };
       await user.save();
     }
 
-    
     const transaction = new Transaction({
       user: userId,
       type: "deposit",
+      toWallet: wallet,
       amount,
       status: "pending",
     });
@@ -50,7 +57,7 @@ export const deposit = async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      message: "Deposit request submitted successfully. Awaiting admin approval.",
+      message: `Deposit request to ${wallet} wallet submitted successfully. Awaiting admin approval.`,
       transaction,
     });
   } catch (error) {
