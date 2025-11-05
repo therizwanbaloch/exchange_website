@@ -34,6 +34,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/rates", rateRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/users", userdataRouter);
+app.use("/api/admin/", adminRouter)
 app.use("/api/transactions", transactionRouter);
 
 app.use("/api/admin", adminRouter)

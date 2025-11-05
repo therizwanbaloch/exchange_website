@@ -1,6 +1,8 @@
 import express from "express";
 // import { isAuth, isAdmin } from "../middlewares/authMiddleware.js";
 import { adminLogin } from "../Controllers/admin/adminLogin.js";
+import { getAllUsers } from "../Controllers/adminControllers.js";
+import { isAdmin } from "../Middlewares/isAdmin.js";
 
 const adminRouter = express.Router();
 
@@ -8,7 +10,8 @@ const adminRouter = express.Router();
 
 adminRouter.post("/login", adminLogin)
 // // Users
-// adminRouter.get("/users", isAuth, isAdmin, getAllUsers);
+
+adminRouter.get("/users",isAdmin, getAllUsers);
 
 // // Transactions
 // adminRouter.get("/transactions", isAuth, isAdmin, getAllTransactions);
