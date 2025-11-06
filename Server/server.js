@@ -13,6 +13,7 @@ import rateRouter from "./Routes/rateRoutes.js";
 import transactionRouter from "./Routes/transactionRoutes.js";
 import adminRouter from "./Routes/adminRoutes.js";
 import userdataRouter from "./Routes/userDataRoutes.js";
+import supportRouter from "./Routes/supportRoutes.js";
 // import requestRouter from "./routes/requestRoutes.js";
 
 dotenv.config();
@@ -30,7 +31,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRouter);
 // app.use("/api/user", userRouter);
-// app.use("/api/support", supportRouter);
+app.use("/api/support", supportRouter);
 app.use("/api/rates", rateRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/users", userdataRouter);

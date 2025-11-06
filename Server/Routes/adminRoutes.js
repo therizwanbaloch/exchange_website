@@ -1,7 +1,7 @@
 import express from "express";
 // import { isAuth, isAdmin } from "../middlewares/authMiddleware.js";
 import { adminLogin } from "../Controllers/admin/adminLogin.js";
-import { getAllUsers } from "../Controllers/adminControllers.js";
+import { getAllTickets, getAllUsers, getPendingTickets } from "../Controllers/adminControllers.js";
 import { isAdmin } from "../Middlewares/isAdmin.js";
 
 const adminRouter = express.Router();
@@ -19,8 +19,8 @@ adminRouter.get("/users",isAdmin, getAllUsers);
 // adminRouter.put("/transactions/:id/reject", isAuth, isAdmin, rejectTransaction);
 
 // // Support tickets
-// adminRouter.get("/support", isAuth, isAdmin, getAllSupportTickets);
-// adminRouter.put("/support/:id", isAuth, isAdmin, updateSupportTicket);
+adminRouter.get("/all-tickets",  isAdmin, getAllTickets);
+adminRouter.get("/pending-tickets", isAdmin, getPendingTickets)
 
 // // Rates (optional)
 // adminRouter.get("/rates", isAuth, isAdmin);

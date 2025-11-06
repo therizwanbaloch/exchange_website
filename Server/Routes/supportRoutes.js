@@ -1,12 +1,12 @@
 import express from "express";
-import { createTicket, getUserTickets, getTicketById, updateTicket } from "../controllers/supportController.js";
-import { isAuth } from "../middlewares/authMiddleware.js";
+import { createTicket, getUserTickets } from "../Controllers/supportController.js";
+import isAuth from "../Middlewares/isAuth.js";
 
 const supportRouter = express.Router();
 
 
-supportRouter.post("/create", isAuth, createTicket);
-supportRouter.get("/user", isAuth, getUserTickets);
+supportRouter.post("/create-ticket", isAuth, createTicket);
+supportRouter.get("/my-tickets", isAuth, getUserTickets);
 
 
 export default supportRouter;
