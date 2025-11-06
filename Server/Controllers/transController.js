@@ -148,3 +148,34 @@ export const withdraw = async (req, res) => {
     });
   }
 };
+
+
+export const getAllTransactions = async (req, res) => {
+   try {
+    const { page = 1, limit = 20 } = req.query;
+    const skip = (page - 1) * limit;
+
+    const transactions = await Transaction.find()
+      .populate("user", "email") 
+      .sort({ createdAt: -1 })    
+      .skip(parseInt(skip))
+      .limit(parseInt(limit));
+
+  
+    const total = await Transaction.countDocuments();
+
+    return res.status(200).json({
+      success: true,
+      transactions,
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(total / limit),
+      totalTransactions: total
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching transactions",
+      error: error.message
+    });
+  }
+};

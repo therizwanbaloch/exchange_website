@@ -1,4 +1,5 @@
 import SupportTicket from "../models/SupportTicket.js";
+import Transaction from "../models/Transaction.js";
 import User from "../models/User.js";
 
 export const getAllUsers = async (req, res) => {
@@ -51,7 +52,7 @@ export const getAllTickets = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const tickets = await SupportTicket.find()
-      .populate('userId', 'name email')
+      .populate('userId', 'email')
       .sort({ createdAt: -1 })
       .skip(parseInt(skip))
       .limit(parseInt(limit));
@@ -69,3 +70,54 @@ export const getAllTickets = async (req, res) => {
   }
 };
 
+
+
+ // Approve Transaction
+export const approveTransaction = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const transaction = await Transaction.findById(id);
+
+    if (!transaction) {
+      return res.status(404).json({ message: "Transaction not found" });
+    }
+
+    transaction.status = "approved";
+    await transaction.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Transaction approved successfully",
+      transaction,
+    });
+  } catch (error) {
+    console.error("Error approving transaction:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Reject Transaction
+export const rejectTransaction = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const transaction = await Transaction.findById(id);
+
+    if (!transaction) {
+      return res.status(404).json({ message: "Transaction not found" });
+    }
+
+    transaction.status = "rejected";
+    await transaction.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Transaction rejected successfully",
+      transaction,
+    });
+  } catch (error) {
+    console.error("Error rejecting transaction:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};

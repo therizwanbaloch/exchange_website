@@ -1,8 +1,10 @@
 import express from "express";
 // import { isAuth, isAdmin } from "../middlewares/authMiddleware.js";
 import { adminLogin } from "../Controllers/admin/adminLogin.js";
-import { getAllTickets, getAllUsers, getPendingTickets } from "../Controllers/adminControllers.js";
+import { approveTransaction, getAllTickets, getAllUsers, getPendingTickets, rejectTransaction } from "../Controllers/adminControllers.js";
 import { isAdmin } from "../Middlewares/isAdmin.js";
+import { getRates } from "../Controllers/rateControllers.js";
+import { getAllTransactions } from "../Controllers/transController.js";
 
 const adminRouter = express.Router();
 
@@ -14,15 +16,15 @@ adminRouter.post("/login", adminLogin)
 adminRouter.get("/users",isAdmin, getAllUsers);
 
 // // Transactions
-// adminRouter.get("/transactions", isAuth, isAdmin, getAllTransactions);
-// adminRouter.put("/transactions/:id/approve", isAuth, isAdmin, approveTransaction);
-// adminRouter.put("/transactions/:id/reject", isAuth, isAdmin, rejectTransaction);
+adminRouter.get("/transactions", isAdmin, getAllTransactions);
+adminRouter.put("/transactions/:id/approve", isAdmin, approveTransaction);
+adminRouter.put("/transactions/:id/reject", isAdmin, rejectTransaction);
 
 // // Support tickets
 adminRouter.get("/all-tickets",  isAdmin, getAllTickets);
 adminRouter.get("/pending-tickets", isAdmin, getPendingTickets)
 
-// // Rates (optional)
-// adminRouter.get("/rates", isAuth, isAdmin);
+// // Rates
+adminRouter.get("/rates", isAdmin, getRates);
 
 export default adminRouter;
