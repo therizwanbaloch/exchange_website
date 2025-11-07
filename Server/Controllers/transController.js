@@ -187,7 +187,7 @@ export const recentTransactions = async (req, res) => {
     const transactions = await Transaction.find({ user: userId })
       .populate("user", "email")
       .sort({ createdAt: -1 })
-      .limit(6);
+      .limit(10);
 
     return res.status(200).json({
       success: true,

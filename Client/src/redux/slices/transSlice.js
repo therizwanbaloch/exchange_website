@@ -1,18 +1,30 @@
+// src/redux/slices/transSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-  transaction: null, 
-};
-
 const transSlice = createSlice({
-  name: "transaction",
-  initialState,
+  name: "transactions",
+  initialState: {
+    recent: [],
+    loading: false,
+    error: null,
+  },
   reducers: {
-    setTransactions: (state, action) => {
-      state.transaction = action.payload;
+    startLoading: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    setRecentTransactions: (state, action) => {
+      state.loading = false;
+      state.recent = action.payload;
+    },
+    setError: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
     },
   },
 });
 
-export const { setTransactions } = transSlice.actions;
+export const { startLoading, setRecentTransactions, setError } =
+  transSlice.actions;
+
 export default transSlice.reducer;

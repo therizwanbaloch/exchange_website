@@ -1,31 +1,41 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import axios from "axios";
-import { setUserData } from "../redux/slices/userSlice"; 
+import { setUserData, clearUserData } from "../redux/slices/userSlice";
 
 const useFetchUser = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user?.user);
-  const URL = import.meta.env.VITE_API_URL
+  const URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
 
-    if (!user && token) {
+  
+    if (storedUser) {
+      dispatch(setUserData(JSON.parse(storedUser)));
+      return;
+    }
+
+    
+    if (token) {
       axios
         .get(`${URL}/users/user-data`, {
+          headers: { Authorization: `Bearer ${token}` },
         })
-        .then((response) => {
-          dispatch(setUserData(response.data.user));
+        .then((res) => {
+          dispatch(setUserData(res.data.user));
+          localStorage.setItem("user", JSON.stringify(res.data.user));
         })
-        .catch((err) => {
-          console.error("Error fetching user:", err);
-          localStorage.removeItem("token"); 
+        .catch(() => {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          dispatch(clearUserData());
         });
     }
-  }, [dispatch, user]);
+  }, [dispatch]);
 
-  return user;
+  return;
 };
 
 export default useFetchUser;
