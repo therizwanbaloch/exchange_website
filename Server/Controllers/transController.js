@@ -179,3 +179,25 @@ export const getAllTransactions = async (req, res) => {
     });
   }
 };
+
+
+export const recentTransactions = async (req, res) => {
+  try {
+    const userId = req.user.id; 
+    const transactions = await Transaction.find({ user: userId })
+      .populate("user", "email")
+      .sort({ createdAt: -1 })
+      .limit(6);
+
+    return res.status(200).json({
+      success: true,
+      transactions,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching user transactions",
+      error: error.message,
+    });
+  }
+};

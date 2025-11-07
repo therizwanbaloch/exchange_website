@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <nav className="sticky top-0 z-50 bg-[#1E3A8A] text-white px-8 py-3 flex items-center justify-between shadow-md font-bricolage">
+    <nav className="sticky top-0 z-50 bg-[#1E3A8A] text-white px-8 py-3 flex items-center justify-between font-bricolage">
       <h1 className="font-bold text-2xl tracking-wide">ExchangerPk</h1>
 
       <ul className="flex gap-8 text-lg font-medium">
