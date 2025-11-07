@@ -29,7 +29,6 @@ export const getAllUsers = async (req, res) => {
 
 // get pending tickets 
 
-
 export const getPendingTickets = async (req, res) => {
   try {
     const tickets = await SupportTicket.find({ status: "pending" })
@@ -44,7 +43,6 @@ export const getPendingTickets = async (req, res) => {
 
 
 // get all tickets.... 
-
 
 export const getAllTickets = async (req, res) => {
   try {
@@ -119,5 +117,66 @@ export const rejectTransaction = async (req, res) => {
   } catch (error) {
     console.error("Error rejecting transaction:", error);
     return res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+
+// get all despoits ...
+
+export const getAllDeposits = async (req, res) => {
+  try {
+    const { page = 1, limit = 20 } = req.query;
+    const skip = (page - 1) * limit;
+
+    const deposits = await Transaction.find({ type: "deposit" })
+      .populate("user", "email")
+      .sort({ createdAt: -1 })
+      .skip(Number(skip))
+      .limit(Number(limit));
+
+    const total = await Transaction.countDocuments({ type: "deposit" });
+
+    res.status(200).json({
+      success: true,
+      message: "All deposits fetched successfully",
+      deposits,
+      currentPage: Number(page),
+      totalPages: Math.ceil(total / limit),
+      totalDeposits: total,
+    });
+  } catch (error) {
+    console.error("Error fetching deposits:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+
+// get all Cashouts
+
+export const getAllWithdrawals = async (req, res) => {
+  try {
+    const { page = 1, limit = 20 } = req.query;
+    const skip = (page - 1) * limit;
+
+    const withdrawals = await Transaction.find({ type: "withdraw" })
+      .populate("user", "email")
+      .sort({ createdAt: -1 })
+      .skip(Number(skip))
+      .limit(Number(limit));
+
+    const total = await Transaction.countDocuments({ type: "withdraw" });
+
+    res.status(200).json({
+      success: true,
+      message: "All withdrawals fetched successfully",
+      withdrawals,
+      currentPage: Number(page),
+      totalPages: Math.ceil(total / limit),
+      totalWithdrawals: total,
+    });
+  } catch (error) {
+    console.error("Error fetching withdrawals:", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };

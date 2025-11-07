@@ -4,8 +4,8 @@ import { deposit, withdraw } from "../Controllers/transController.js";
 
 const tansRouter = express.Router();
 
-tansRouter.post("/deposit", isAuth, deposit);
-tansRouter.post("/withdraw", isAuth, withdraw);
+tansRouter.post("/deposits", isAuth, deposit);
+tansRouter.post("/withdraws", isAuth, withdraw);
 
 
 export default tansRouter;
