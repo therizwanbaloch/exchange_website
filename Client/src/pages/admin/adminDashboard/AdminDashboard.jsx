@@ -7,25 +7,30 @@ import LastSixUsers from '../DashComponents/LastSixUsers';
 
 const AdminDashboard = () => {
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors overflow-x-hidden">
+      {/* Sidebar / Bottom Nav */}
       <AdminScrollBar />
 
-      <main className="flex-1 lg:ml-64 p-6 space-y-8">
-        <section>
+      {/* Main content */}
+      <main className="flex-1 lg:ml-64 p-6 md:p-8 space-y-8">
+        <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 transition-all hover:shadow-2xl">
           <DataSection />
         </section>
 
-        <section>
+        <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 transition-all hover:shadow-2xl">
           <PendingDeposits />
         </section>
 
-        <section>
+        <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 transition-all hover:shadow-2xl">
           <PendingWithdraw />
         </section>
 
-        <section>
+        <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 transition-all hover:shadow-2xl">
           <LastSixUsers />
         </section>
+
+        {/* Extra space for mobile bottom nav */}
+        <div className="lg:hidden h-16"></div>
       </main>
     </div>
   );

@@ -8,24 +8,25 @@ import { getAllTransactions } from "../Controllers/transController.js";
 
 const adminRouter = express.Router();
 
-// admin login 
 
 adminRouter.post("/login", adminLogin)
-// // Users
 
 adminRouter.get("/users",isAdmin, getAllUsers);
 
-// // Transactions
+
 adminRouter.get("/transactions", isAdmin, getAllTransactions);
 adminRouter.put("/transactions/:id/approve", isAdmin, approveTransaction);
 adminRouter.put("/transactions/:id/reject", isAdmin, rejectTransaction);
 adminRouter.get("/deposits", isAdmin , getAllDeposits )
 adminRouter.get("/withdraws", isAdmin , getAllWithdrawals )
-// // Support tickets
+
+
+
 adminRouter.get("/all-tickets",  isAdmin, getAllTickets);
 adminRouter.get("/pending-tickets", isAdmin, getPendingTickets)
 
-// // Rates
+
+
 adminRouter.get("/rates", isAdmin, getRates);
 
 export default adminRouter;

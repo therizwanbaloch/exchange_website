@@ -13,37 +13,52 @@ const UserDashboard = () => {
   const balanceUSD = user?.balances?.find((b) => b.currency === "USD")?.amount;
 
   return (
-    <div className="grid grid-cols-7 grid-rows-9 gap-4">
-      
-      <div className="col-span-2 row-span-9">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
+      {/* Sidebar */}
+      <div className="lg:w-64 w-full">
         <DashboardSidebar />
       </div>
 
-      
-      <div className="col-span-5 col-start-3">
-        <DashboardNav />
-      </div>
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        {/* Navbar */}
+        <div className="w-full">
+          <DashboardNav />
+        </div>
 
-    
-      {user && (
-        <>
-          <div className="col-start-3 row-start-2">
-            <WalletCard currency="PKR" amount={`₨${balancePKR || 0}`} color="blue" />
+        {/* Content Area */}
+        <div className="p-4 lg:p-6 flex flex-col gap-6">
+          {/* Wallet Cards */}
+          <div className="flex flex-col sm:flex-row gap-4">
+            {user && (
+              <>
+                <WalletCard
+                  currency="PKR"
+                  amount={`₨${balancePKR || 0}`}
+                  color="blue"
+                />
+                <WalletCard
+                  currency="USD"
+                  amount={`$${balanceUSD || 0}`}
+                  color="green"
+                />
+              </>
+            )}
           </div>
-          <div className="col-start-4 row-start-2">
-            <WalletCard currency="USD" amount={`$${balanceUSD || 0}`} color="green" />
+
+          {/* Activity + Steps */}
+          <div className="flex flex-col lg:flex-row gap-6">
+            {/* Activity */}
+            <div className="flex-1">
+              <DashActivity />
+            </div>
+
+            {/* Steps */}
+            <div className="lg:w-1/3">
+              <Steps />
+            </div>
           </div>
-        </>
-      )}
-
-      
-      <div className="col-span-3 row-span-7 col-start-3 row-start-3">
-        <DashActivity />
-      </div>
-
-      
-      <div className="col-span-2 row-span-7 col-start-6 row-start-3">
-        <Steps />
+        </div>
       </div>
     </div>
   );

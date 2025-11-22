@@ -7,6 +7,7 @@ import {
   FiUpload,
   FiRepeat,
   FiHelpCircle,
+  FiFileText,
   FiMenu,
   FiX,
 } from "react-icons/fi";
@@ -22,6 +23,7 @@ const DashboardSidebar = () => {
     { name: "Exchange", icon: <FiRepeat />, path: "/exchange" },
     { name: "Send Money", icon: <FiSend />, path: "/send" },
     { name: "Request Money", icon: <FiUserPlus />, path: "/request" },
+    { name: "Tickets", icon: <FiFileText />, path: "/tickets" }, // Added Tickets page
   ];
 
   return (
@@ -39,8 +41,7 @@ const DashboardSidebar = () => {
       {/* Sidebar */}
       <aside
         className={`fixed top-0 left-0 h-full bg-[#1E3A8A] text-white w-64 shadow-lg transform transition-transform duration-300 z-40
-        ${isOpen ? "translate-x-0" : "-translate-x-full"}
-        lg:translate-x-0`}
+        ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
       >
         <div className="flex flex-col h-full font-bricolage">
           {/* Branding */}
@@ -56,7 +57,7 @@ const DashboardSidebar = () => {
                   <Link
                     to={item.path}
                     className="flex items-center gap-3 text-white hover:bg-[#3B82F6] p-3 rounded-md transition cursor-pointer"
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => setIsOpen(false)} // close sidebar on mobile
                   >
                     <span className="text-xl">{item.icon}</span>
                     <span className="text-md font-medium">{item.name}</span>
@@ -71,10 +72,13 @@ const DashboardSidebar = () => {
             <h4 className="text-sm font-semibold text-white/80 mb-1">
               Need Help?
             </h4>
-            <button className="flex items-center gap-2 bg-[#3B82F6] text-white px-3 py-2 rounded-md hover:bg-[#0D6EFD] w-full justify-center transition">
+            <Link
+              to="/contact-us"
+              className="flex items-center gap-2 bg-[#3B82F6] text-white px-3 py-2 rounded-md hover:bg-[#0D6EFD] w-full justify-center transition"
+            >
               <FiHelpCircle />
               Contact Support
-            </button>
+            </Link>
           </div>
         </div>
       </aside>
