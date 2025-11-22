@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 // import { useSelector } from "react-redux";
 
 import LandingPage from "./pages/LandingPage";
+import ComingSoon from "./pages/ComingSoon";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import UserDashboard from "./pages/Dashpage/UserDashboard";
@@ -18,12 +19,14 @@ import { useSelector } from "react-redux";
 import useFetchUser from "./hooks/useFetchUser";
 
 const App = () => {
- useFetchUser()
-  const userData = useSelector((state) => state.user?.user);
+  useFetchUser();
+  const userData = useSelector((state) => state.user);
   return (
     <Routes>
-      
-      <Route path="/" element={userData ? <UserDashboard /> : <LandingPage />} />
+      <Route
+        path="/"
+        element={userData ? <UserDashboard /> : <LandingPage />}
+      />
 
       <Route
         path="/login"
@@ -33,9 +36,15 @@ const App = () => {
         path="/register"
         element={userData ? <Navigate to="/" /> : <Register />}
       />
+
+      <Route path="/deposit" element={<ComingSoon />} />
+      <Route path="/withdraw" element={<ComingSoon />} />
+      <Route path="/exchange" element={<ComingSoon />} />
+      <Route path="/send" element={<ComingSoon />} />
+      <Route path="/request" element={<ComingSoon />} />
+
       <Route path="*" element={<Navigate to="/" />} />
 
-      
       <Route path="/admin-login" element={<AdminLogin />} />
       <Route path="/admin" element={<AdminDashboard />} />
       <Route path="/admin/manage-users" element={<ManageUsers />} />

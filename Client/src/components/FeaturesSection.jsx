@@ -38,7 +38,7 @@ const FeaturesSection = () => {
         <UserDataCard 
           icon={<FaUsers className="text-6xl text-[#0D6EFD]" />}
           title="Members"
-          usersData="200+"
+          usersData="700+"
         />
         <UserDataCard 
           icon={<GiWallet className="text-6xl text-[#0D6EFD]" />}

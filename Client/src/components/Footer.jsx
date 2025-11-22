@@ -7,6 +7,10 @@ import {
 } from "react-icons/fa";
 
 const Footer = () => {
+  const whatsappNumber = "923450394932"; // remove + and spaces for wa.me
+  const whatsappMessage =
+    "Hi admin, I found your number on pkrspot.com. Can you help me?";
+
   return (
     <footer className="bg-[#1E3A8A] text-white py-12 px-6 md:px-20">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -44,13 +48,31 @@ const Footer = () => {
 
         <div className="flex flex-col gap-4">
           <h3 className="text-xl font-semibold mb-2">Contact Us</h3>
-          <p>Email: rizwanjanbaloch7@gmail.com</p>
-          <p>Phone: +92 312 7130457</p>
+
+          {/* Email → opens mail app */}
+          <a
+            href="mailto:rizwanjanbaloch7@gmail.com"
+            className="hover:text-[#3B82F6] transition underline"
+          >
+            Email: rizwanjanbaloch7@gmail.com
+          </a>
+
+          {/* WhatsApp → opens WhatsApp chat */}
+          <a
+            href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+              whatsappMessage
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-[#3B82F6] transition underline"
+          >
+            Phone: +92 345 0394932
+          </a>
         </div>
       </div>
 
       <div className="mt-8 border-t border-white/20 pt-4 text-center text-white/70 text-sm">
-        &copy; {new Date().getFullYear()} ExchangerPk. All rights reserved.
+        &copy; 2020 ExchangerPk. All rights reserved.
       </div>
     </footer>
   );
