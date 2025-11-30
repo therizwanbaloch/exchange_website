@@ -21,7 +21,7 @@ const ComingSoon = () => {
         </p>
 
         <Link
-          to="/"
+          to="/user-dashboard"
           className="inline-block px-8 py-2 rounded-md bg-[#3B82F6] hover:bg-[#0D6EFD] transition font-medium"
         >
           Back to Home

@@ -10,7 +10,7 @@ const NotFound = () => {
           Oops! Page not found.
         </p>
         <Link
-          to="/admin"
+          to="/user-dashboard"
           className="mt-6 inline-block px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
         >
           Go Back to Dashboard

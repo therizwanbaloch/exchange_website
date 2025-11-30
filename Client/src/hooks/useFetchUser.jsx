@@ -11,7 +11,7 @@ const useFetchUser = () => {
     const token = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
 
-  
+    
     if (storedUser) {
       dispatch(setUserData(JSON.parse(storedUser)));
       return;
@@ -27,15 +27,21 @@ const useFetchUser = () => {
           dispatch(setUserData(res.data.user));
           localStorage.setItem("user", JSON.stringify(res.data.user));
         })
-        .catch(() => {
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-          dispatch(clearUserData());
+        .catch((error) => {
+          
+          if (error.response && error.response.status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            dispatch(clearUserData());
+          }
+
+          
+          console.warn("Error fetching user:", error);
         });
     }
-  }, [dispatch]);
+  }, [dispatch, URL]);
 
-  return;
+  return null;
 };
 
 export default useFetchUser;

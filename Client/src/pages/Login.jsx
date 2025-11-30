@@ -41,7 +41,7 @@ const Login = () => {
       dispatch(setUserData(user));
 
       
-      navigate("/");
+      navigate("/user-dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
     }

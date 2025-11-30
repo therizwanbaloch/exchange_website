@@ -15,7 +15,7 @@ const Footer = () => {
     <footer className="bg-[#1E3A8A] text-white py-12 px-6 md:px-20">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="flex flex-col gap-4">
-          <h2 className="text-2xl font-bold">ExchangerPk</h2>
+          <h2 className="text-2xl font-bold">PKRSPOT</h2>
           <p className="text-white/80">
             The easiest and fastest way to transfer money securely. Connect with
             us and stay updated!
@@ -54,7 +54,7 @@ const Footer = () => {
             href="mailto:rizwanjanbaloch7@gmail.com"
             className="hover:text-[#3B82F6] transition underline"
           >
-            Email: rizwanjanbaloch7@gmail.com
+            Email: support@pkrspot.com
           </a>
 
           {/* WhatsApp → opens WhatsApp chat */}
@@ -72,7 +72,7 @@ const Footer = () => {
       </div>
 
       <div className="mt-8 border-t border-white/20 pt-4 text-center text-white/70 text-sm">
-        &copy; 2020 ExchangerPk. All rights reserved.
+        &copy; 2020 - {new Date().getFullYear()} PKRSPOT. All rights reserved.
       </div>
     </footer>
   );

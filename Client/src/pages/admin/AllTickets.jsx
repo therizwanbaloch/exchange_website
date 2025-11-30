@@ -27,7 +27,7 @@ const AllTickets = () => {
     } else {
       fetchTickets();
     }
-  }, [token]);
+  }, [token, navigate]);
 
   const statusBadge = (status) => {
     switch (status?.toLowerCase()) {

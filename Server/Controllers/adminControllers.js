@@ -180,3 +180,24 @@ export const getAllWithdrawals = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+
+
+// get ticket details......
+
+export const getTicketDetailsAdmin = async (req, res) => {
+  try {
+    const ticketId = req.params.id; 
+
+    const ticket = await SupportTicket.findById(ticketId).populate("userId", "email");
+
+    if (!ticket) {
+      return res.status(404).json({ message: "Ticket not found" });
+    }
+
+    res.status(200).json({ ticket });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};

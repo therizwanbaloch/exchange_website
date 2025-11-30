@@ -14,30 +14,41 @@ import Deposits from "./pages/admin/Deposits";
 import Withdrawals from "./pages/admin/Withdrawals";
 import CustomRates from "./pages/admin/CustomRates";
 import DepositMethods from "./pages/admin/DepositMethods";
-import SupportTickets from "./pages/admin/SupportTickets";
-import { useSelector } from "react-redux";
-import useFetchUser from "./hooks/useFetchUser";
 import AllTickets from "./pages/admin/AllTickets";
+import TicketDetails from "./pages/admin/DashComponents/TicketDetails";
 import NotFound from "./pages/NotFound";
 
-// PrivateRoute component
+
 const PrivateRoute = ({ children }) => {
-  const userData = useSelector((state) => state.user.user);
-  return userData ? children : <Navigate to="/" replace />;
+  const token = localStorage.getItem("token");
+  return token ? children : <Navigate to="/login" replace />;
+};
+
+const AdminRoute = ({ children }) => {
+  const token = localStorage.getItem("token");
+  return token ? children : <Navigate to="/admin-login" replace />;
 };
 
 const App = () => {
-  useFetchUser();
-  const userData = useSelector((state) => state.user.user);
+  const token = localStorage.getItem("token");
 
   return (
     <Routes>
       {/* Public Routes */}
-      <Route path="/" element={userData ? <Navigate to="/user-dashboard" replace /> : <LandingPage />} />
-      <Route path="/login" element={userData ? <Navigate to="/user-dashboard" replace /> : <Login />} />
-      <Route path="/register" element={userData ? <Navigate to="/user-dashboard" replace /> : <Register />} />
+      <Route
+        path="/"
+        element={token ? <Navigate to="/user-dashboard" replace /> : <LandingPage />}
+      />
+      <Route
+        path="/login"
+        element={token ? <Navigate to="/user-dashboard" replace /> : <Login />}
+      />
+      <Route
+        path="/register"
+        element={token ? <Navigate to="/user-dashboard" replace /> : <Register />}
+      />
 
-      {/* Protected Routes */}
+      {/* User Protected Routes */}
       <Route
         path="/user-dashboard"
         element={
@@ -97,15 +108,72 @@ const App = () => {
 
       {/* Admin Routes */}
       <Route path="/admin-login" element={<AdminLogin />} />
-      <Route path="/admin" element={<AdminDashboard />} />
-      <Route path="/admin/manage-users" element={<ManageUsers />} />
-      <Route path="/admin/deposits" element={<Deposits />} />
-      <Route path="/admin/withdrawals" element={<Withdrawals />} />
-      <Route path="/admin/custom-rates" element={<CustomRates />} />
-      <Route path="/admin/deposit-methods" element={<DepositMethods />} />
-      <Route path="/admin/all-tickets" element={<AllTickets />} />
+      <Route
+        path="/admin"
+        element={
+          <AdminRoute>
+            <AdminDashboard />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/admin/manage-users"
+        element={
+          <AdminRoute>
+            <ManageUsers />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/admin/deposits"
+        element={
+          <AdminRoute>
+            <Deposits />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/admin/withdrawals"
+        element={
+          <AdminRoute>
+            <Withdrawals />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/admin/custom-rates"
+        element={
+          <AdminRoute>
+            <CustomRates />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/admin/deposit-methods"
+        element={
+          <AdminRoute>
+            <DepositMethods />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/admin/all-tickets"
+        element={
+          <AdminRoute>
+            <AllTickets />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/admin/ticket/:id"
+        element={
+          <AdminRoute>
+            <TicketDetails />
+          </AdminRoute>
+        }
+      />
 
-
+      {/* Fallback */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

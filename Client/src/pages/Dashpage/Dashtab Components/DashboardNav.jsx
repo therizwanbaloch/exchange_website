@@ -30,7 +30,7 @@ const DashboardNav = () => {
         <div className="flex items-center gap-2">
           <FiHome className="text-base text-blue-600" />
           <h1 className="text-lg font-semibold hidden sm:block">
-            Exchange Dashboard
+            Customer Dashboard
           </h1>
         </div>
 

@@ -12,15 +12,15 @@ const ContactUsForm = () => {
   const navigate = useNavigate();
   const URL = import.meta.env.VITE_API_URL;
 
-  // Get token from localStorage
+  
   const token = localStorage.getItem("token");
 
   useEffect(() => {
     if (!token) {
       alert("You are not logged in!");
-      navigate("/login"); // redirect if not logged in
+      navigate("/login");
     }
-  }, [token]);
+  }, [token, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,7 +33,7 @@ const ContactUsForm = () => {
         { subject, message },
         {
           headers: {
-            Authorization: `Bearer ${token}`, 
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -55,28 +55,36 @@ const ContactUsForm = () => {
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
-      {/* Sidebar */}
+    
       <div className="lg:w-64 w-full">
         <DashboardSidebar />
       </div>
 
-      {/* Main Content */}
+      
       <div className="flex-1 flex flex-col">
-        {/* Navbar */}
+        
         <div className="w-full">
           <DashboardNav />
         </div>
 
-        {/* Contact Form */}
+        
         <div className="flex-1 p-4 lg:p-6">
           <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-3xl mx-auto">
             <h2 className="text-2xl font-bold mb-4">PKRSPOT Contact Us</h2>
 
             {success ? (
-              <p className="text-green-600">
-                Your ticket has been submitted successfully! We will get back to
-                you soon.
-              </p>
+              <div className="flex flex-col gap-4">
+                <p className="text-green-600">
+                  Your ticket has been submitted successfully! We will get back to
+                  you soon.
+                </p>
+                <button
+                  onClick={() => navigate("/")}
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-max"
+                >
+                  Back to Dashboard
+                </button>
+              </div>
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <input
