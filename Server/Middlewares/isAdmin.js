@@ -19,6 +19,9 @@ export const isAdmin = (req, res, next) => {
       return res.status(403).json({ success: false, message: "Access denied: Not an admin" });
     }
 
+    
+    req.user = decoded;  
+
     next();
   } catch (error) {
     return res.status(401).json({ success: false, message: "Invalid or expired token" });

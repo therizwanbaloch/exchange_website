@@ -1,7 +1,6 @@
 import express from "express";
-// import { isAuth, isAdmin } from "../middlewares/authMiddleware.js";
 import { adminLogin } from "../Controllers/admin/adminLogin.js";
-import { approveTransaction, getAllDeposits, getAllTickets, getAllUsers, getAllWithdrawals, getDashboardStats, getPendingDeposits, getPendingTickets, getPendingWithdraws, getRecentUsers, getTicketDetailsAdmin, rejectTransaction } from "../Controllers/adminControllers.js";
+import { approveTransaction, createDepositMethod, getAllDeposits, getAllTickets, getAllUsers, getAllWithdrawals, getDashboardStats, getDepositMethods, getPendingDeposits, getPendingTickets, getPendingWithdraws, getRecentUsers, getTicketDetailsAdmin, rejectTransaction } from "../Controllers/adminControllers.js";
 import { isAdmin } from "../Middlewares/isAdmin.js";
 import { getRates } from "../Controllers/rateControllers.js";
 import { getAllTransactions } from "../Controllers/transController.js";
@@ -23,7 +22,9 @@ adminRouter.put("/transactions/:id/reject", isAdmin, rejectTransaction);
 adminRouter.get("/deposits", isAdmin , getAllDeposits )
 adminRouter.get("/p-deposits", isAdmin , getPendingDeposits )
 adminRouter.get("/withdraws", isAdmin , getAllWithdrawals )
-adminRouter.get("/p-withdraws", isAdmin , getPendingWithdraws )
+adminRouter.get("/p-withdraws", isAdmin , getPendingWithdraws );
+adminRouter.post("/deposit-method", isAdmin , createDepositMethod);
+adminRouter.get("/deposit-methods", isAdmin , getDepositMethods);
 
 
 

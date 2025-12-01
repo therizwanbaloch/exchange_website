@@ -1,6 +1,8 @@
 import SupportTicket from "../models/SupportTicket.js";
 import Transaction from "../models/Transaction.js";
 import User from "../models/User.js";
+import DepositMethod from "../models/depositMethod.js";
+import jwt from "jsonwebtoken";
 
 
 //get all users
@@ -268,5 +270,45 @@ export const getDashboardStats = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Server error" });
+  }
+};
+// Create a new deposit method
+export const createDepositMethod = async (req, res) => {
+  try {
+    const { gateway, currency, minAmount, maxAmount } = req.body;
+
+    if (!gateway || !currency || !minAmount || !maxAmount) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    
+    const adminId = req.user.id;
+
+    const newMethod = await DepositMethod.create({
+      gateway,
+      currency,
+      minAmount,
+      maxAmount,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Deposit method created successfully",
+      method: newMethod,
+    });
+  } catch (err) {
+    console.error("Error creating deposit method:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// Get all deposit methods
+export const getDepositMethods = async (req, res) => {
+  try {
+    const methods = await DepositMethod.find().sort({ createdAt: -1 });
+    res.status(200).json(methods);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
