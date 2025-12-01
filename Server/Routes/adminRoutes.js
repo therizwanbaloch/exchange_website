@@ -1,6 +1,6 @@
 import express from "express";
 import { adminLogin } from "../Controllers/admin/adminLogin.js";
-import { approveTransaction, createDepositMethod, getAllDeposits, getAllTickets, getAllUsers, getAllWithdrawals, getDashboardStats, getDepositMethods, getPendingDeposits, getPendingTickets, getPendingWithdraws, getRecentUsers, getTicketDetailsAdmin, rejectTransaction } from "../Controllers/adminControllers.js";
+import { approveTransaction, createDepositMethod, deleteDepositMethod, getAllDeposits, getAllTickets, getAllUsers, getAllWithdrawals, getDashboardStats, getDepositMethods, getPendingDeposits, getPendingTickets, getPendingWithdraws, getRecentUsers, getTicketDetailsAdmin, rejectTransaction, updateDepositMethod } from "../Controllers/adminControllers.js";
 import { isAdmin } from "../Middlewares/isAdmin.js";
 import { getRates } from "../Controllers/rateControllers.js";
 import { getAllTransactions } from "../Controllers/transController.js";
@@ -25,6 +25,8 @@ adminRouter.get("/withdraws", isAdmin , getAllWithdrawals )
 adminRouter.get("/p-withdraws", isAdmin , getPendingWithdraws );
 adminRouter.post("/deposit-method", isAdmin , createDepositMethod);
 adminRouter.get("/deposit-methods", isAdmin , getDepositMethods);
+adminRouter.put("/deposit-method/update/:id", isAdmin, updateDepositMethod);
+adminRouter.delete("/deposit-method/delete/:id", isAdmin, deleteDepositMethod)
 
 
 

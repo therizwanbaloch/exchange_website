@@ -312,3 +312,50 @@ export const getDepositMethods = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
+// update deposit method 
+
+export const updateDepositMethod = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { gateway, currency, minAmount, maxAmount } = req.body;
+
+    const method = await DepositMethod.findById(id);
+    if (!method) {
+      return res.status(404).json({ message: "Deposit method not found" });
+    }
+
+    method.gateway = gateway || method.gateway;
+    method.currency = currency || method.currency;
+    method.minAmount = minAmount || method.minAmount;
+    method.maxAmount = maxAmount || method.maxAmount;
+
+    await method.save();
+
+    res.json({ message: "Deposit method updated successfully", method });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+// DELETE deposit method
+
+ export const deleteDepositMethod = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const method = await DepositMethod.findById(id);
+    if (!method) {
+      return res.status(404).json({ message: "Deposit method not found" });
+    }
+
+    await method.deleteOne();
+
+    res.json({ message: "Deposit method deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};

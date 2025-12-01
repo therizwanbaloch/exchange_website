@@ -38,7 +38,6 @@ const DepositMethods = () => {
     fetchMethods();
   }, [URL, token]);
 
-  // Handle input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -62,7 +61,7 @@ const DepositMethods = () => {
   const handleEditDeposit = async () => {
     try {
       const res = await axios.put(
-        `${URL}/admin/deposit-method/${editMethod._id}`,
+        `${URL}/admin/deposit-method/update/${editMethod._id}`,
         formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -78,7 +77,22 @@ const DepositMethods = () => {
     }
   };
 
-  // Open edit modal
+  // Delete deposit method
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this deposit method?"))
+      return;
+
+    try {
+      await axios.delete(`${URL}/admin/deposit-method/delete/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setMethods(methods.filter((m) => m._id !== id));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete deposit method");
+    }
+  };
+
   const openEditModal = (method) => {
     setEditMethod(method);
     setFormData({
@@ -122,7 +136,7 @@ const DepositMethods = () => {
                   <th className="px-6 py-3">Currency</th>
                   <th className="px-6 py-3">Min Amount</th>
                   <th className="px-6 py-3">Max Amount</th>
-                  <th className="px-6 py-3">Action</th>
+                  <th className="px-6 py-3">Actions</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -132,12 +146,18 @@ const DepositMethods = () => {
                     <td className="px-6 py-3">{method.currency}</td>
                     <td className="px-6 py-3">{method.minAmount}</td>
                     <td className="px-6 py-3">{method.maxAmount}</td>
-                    <td className="px-6 py-3">
+                    <td className="px-6 py-3 flex gap-2">
                       <button
                         onClick={() => openEditModal(method)}
                         className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
                       >
                         Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(method._id)}
+                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                      >
+                        Delete
                       </button>
                     </td>
                   </tr>
@@ -172,6 +192,12 @@ const DepositMethods = () => {
                   >
                     Edit
                   </button>
+                  <button
+                    onClick={() => handleDelete(method._id)}
+                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
             ))}
@@ -179,7 +205,7 @@ const DepositMethods = () => {
         </div>
       )}
 
-      {/* Glassy Overlay for Add Modal */}
+      {/* Glassy Add Modal */}
       {showAddModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="absolute inset-0 bg-blue-100 bg-opacity-30 backdrop-blur-md"></div>
@@ -235,7 +261,7 @@ const DepositMethods = () => {
         </div>
       )}
 
-      {/* Glassy Overlay for Edit Modal */}
+      {/* Glassy Edit Modal */}
       {showEditModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="absolute inset-0 bg-blue-100 bg-opacity-30 backdrop-blur-md"></div>
