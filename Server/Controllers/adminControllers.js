@@ -2,6 +2,9 @@ import SupportTicket from "../models/SupportTicket.js";
 import Transaction from "../models/Transaction.js";
 import User from "../models/User.js";
 
+
+//get all users
+
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select("-password");
@@ -25,6 +28,19 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
+export const getRecentUsers = async (req, res) => {
+  try {
+    const users = await User.find({})
+      .sort({ createdAt: -1 })  
+      .limit(5)
+      .select("name email createdAt");
+
+    res.json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
 
 
 // get pending tickets 
@@ -149,6 +165,22 @@ export const getAllDeposits = async (req, res) => {
     console.error("Error fetching deposits:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
+}
+
+// Get all pending deposits
+export const getPendingDeposits = async (req, res) => {
+  try {
+    
+    const pendingDeposits = await Transaction.find({
+      type: "deposit",
+      status: "pending"
+    }).populate("user", "name email");
+
+    res.json(pendingDeposits);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
 };
 
 
@@ -181,6 +213,21 @@ export const getAllWithdrawals = async (req, res) => {
   }
 };
 
+// Get all pending withdrawals
+
+export const getPendingWithdraws = async (req, res) => {
+  try {
+    const pendingWithdraws = await Transaction.find({
+      type: "withdraw",
+      status: "pending"
+    }).populate("user", "name email"); 
+
+    res.json(pendingWithdraws);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
 
 
 // get ticket details......
@@ -199,5 +246,27 @@ export const getTicketDetailsAdmin = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+// get dashboard stats
+
+export const getDashboardStats = async (req, res) => {
+  try {
+    const totalUsers = await User.countDocuments();
+    const totalTransactions = await Transaction.countDocuments();
+    const totalDeposits = await Transaction.countDocuments({ type: "deposit" });
+    const totalWithdraws = await Transaction.countDocuments({ type: "withdraw" });
+
+    res.json({
+      totalUsers,
+      totalTransactions,
+      totalDeposits,
+      totalWithdraws,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
   }
 };
