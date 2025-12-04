@@ -18,13 +18,14 @@ const CustomRates = () => {
   const URL = import.meta.env.VITE_API_URL;
   const token = localStorage.getItem("token");
 
-  // Fetch all custom rates
+  // Fetch all rates
   useEffect(() => {
     const fetchRates = async () => {
       try {
         const res = await axios.get(`${URL}/admin/rates`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+
         setRates(Array.isArray(res.data) ? res.data : []);
       } catch (err) {
         console.error(err);
@@ -33,6 +34,7 @@ const CustomRates = () => {
         setLoading(false);
       }
     };
+
     fetchRates();
   }, [URL, token]);
 
@@ -43,9 +45,10 @@ const CustomRates = () => {
   // Add rate
   const handleAddRate = async () => {
     try {
-      const res = await axios.post(`${URL}/admin/custom-rate`, formData, {
+      const res = await axios.post(`${URL}/rates/add-rate`, formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       setRates([res.data.rate, ...rates]);
       setShowAddModal(false);
       setFormData({ fromCurrency: "", toCurrency: "", rate: "" });
@@ -59,11 +62,16 @@ const CustomRates = () => {
   const handleEditRate = async () => {
     try {
       const res = await axios.put(
-        `${URL}/admin/rates/${editRate._id}`,
+        `${URL}/rates/edit-rate/${editRate._id}`,
         formData,
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
-      setRates(rates.map((r) => (r._id === editRate._id ? res.data.rate : r)));
+
+      setRates(
+        rates.map((r) => (r._id === editRate._id ? res.data.rate : r))
+      );
       setShowEditModal(false);
       setEditRate(null);
       setFormData({ fromCurrency: "", toCurrency: "", rate: "" });
@@ -73,12 +81,13 @@ const CustomRates = () => {
     }
   };
 
-  // Delete rate (direct API call)
+  // Delete rate
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${URL}/admin/rates/${id}`, {
+      await axios.delete(`${URL}/rates/delete-rate/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       setRates(rates.filter((r) => r._id !== id));
     } catch (err) {
       console.error(err);
@@ -96,8 +105,17 @@ const CustomRates = () => {
     setShowEditModal(true);
   };
 
+  // Fancy loading animation
   if (loading)
-    return <div className="mt-8 mx-4 text-gray-700 font-bold">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-[60vh]">
+        <div className="flex space-x-2">
+          <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>
+          <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+          <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+        </div>
+      </div>
+    );
 
   return (
     <div className="mt-8 mx-4 h-[calc(100vh-64px)] overflow-y-auto">
@@ -172,6 +190,7 @@ const CustomRates = () => {
                 <p>
                   <strong>Rate:</strong> {rate.rate}
                 </p>
+
                 <div className="flex gap-2 mt-2">
                   <button
                     onClick={() => openEditModal(rate)}
@@ -192,13 +211,14 @@ const CustomRates = () => {
         </div>
       )}
 
-      {/* Add/Edit Modals */}
+      {/* Add Modal */}
       {showAddModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div
             className="absolute inset-0 bg-blue-100 bg-opacity-30 backdrop-blur-md"
             onClick={() => setShowAddModal(false)}
           ></div>
+
           <div className="relative bg-white bg-opacity-90 rounded-lg p-6 w-full max-w-md shadow-lg z-10">
             <button
               onClick={() => setShowAddModal(false)}
@@ -206,7 +226,9 @@ const CustomRates = () => {
             >
               ×
             </button>
+
             <h3 className="text-lg font-bold mb-4">Add Custom Rate</h3>
+
             <input
               type="text"
               placeholder="From Currency"
@@ -215,6 +237,7 @@ const CustomRates = () => {
               onChange={handleChange}
               className="w-full mb-2 p-2 border rounded"
             />
+
             <input
               type="text"
               placeholder="To Currency"
@@ -223,6 +246,7 @@ const CustomRates = () => {
               onChange={handleChange}
               className="w-full mb-2 p-2 border rounded"
             />
+
             <input
               type="number"
               placeholder="Rate"
@@ -231,6 +255,7 @@ const CustomRates = () => {
               onChange={handleChange}
               className="w-full mb-4 p-2 border rounded"
             />
+
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setShowAddModal(false)}
@@ -238,6 +263,7 @@ const CustomRates = () => {
               >
                 Cancel
               </button>
+
               <button
                 onClick={handleAddRate}
                 className="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600"
@@ -249,12 +275,14 @@ const CustomRates = () => {
         </div>
       )}
 
+      {/* Edit Modal */}
       {showEditModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div
             className="absolute inset-0 bg-blue-100 bg-opacity-30 backdrop-blur-md"
             onClick={() => setShowEditModal(false)}
           ></div>
+
           <div className="relative bg-white bg-opacity-90 rounded-lg p-6 w-full max-w-md shadow-lg z-10">
             <button
               onClick={() => setShowEditModal(false)}
@@ -262,7 +290,9 @@ const CustomRates = () => {
             >
               ×
             </button>
+
             <h3 className="text-lg font-bold mb-4">Edit Custom Rate</h3>
+
             <input
               type="text"
               placeholder="From Currency"
@@ -271,6 +301,7 @@ const CustomRates = () => {
               onChange={handleChange}
               className="w-full mb-2 p-2 border rounded"
             />
+
             <input
               type="text"
               placeholder="To Currency"
@@ -279,6 +310,7 @@ const CustomRates = () => {
               onChange={handleChange}
               className="w-full mb-2 p-2 border rounded"
             />
+
             <input
               type="number"
               placeholder="Rate"
@@ -287,6 +319,7 @@ const CustomRates = () => {
               onChange={handleChange}
               className="w-full mb-4 p-2 border rounded"
             />
+
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setShowEditModal(false)}
@@ -294,6 +327,7 @@ const CustomRates = () => {
               >
                 Cancel
               </button>
+
               <button
                 onClick={handleEditRate}
                 className="px-4 py-2 rounded bg-yellow-500 text-white hover:bg-yellow-600"

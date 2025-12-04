@@ -47,3 +47,53 @@ export const createRate = async (req, res) => {
     .status(201)
     .json({ success: true, message: "Rate created", rate: newRate });
 };
+
+
+export const updateRate = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { fromCurrency, toCurrency, rate } = req.body;
+
+    const updatedRate = await Rate.findByIdAndUpdate(
+      id,
+      {
+        fromCurrency,
+        toCurrency,
+        rate,
+        updatedAt: Date.now(),
+      },
+      { new: true }
+    );
+
+    if (!updatedRate) {
+      return res.status(404).json({ message: "Rate not found" });
+    }
+
+    res.status(200).json({
+      message: "Rate updated successfully",
+      rate: updatedRate, 
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating rate", error: error.message });
+  }
+};
+
+
+export const deleteRate = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deletedRate = await Rate.findByIdAndDelete(id);
+
+    if (!deletedRate) {
+      return res.status(404).json({ message: "Rate not found" });
+    }
+
+    res.status(200).json({
+      message: "Rate deleted successfully",
+      rate: deletedRate,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting rate", error: error.message });
+  }
+};
