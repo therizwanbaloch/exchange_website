@@ -9,6 +9,9 @@ const DepositMethods = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editMethod, setEditMethod] = useState(null);
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+
   const [formData, setFormData] = useState({
     gateway: "",
     currency: "",
@@ -34,7 +37,6 @@ const DepositMethods = () => {
         setLoading(false);
       }
     };
-
     fetchMethods();
   }, [URL, token]);
 
@@ -78,15 +80,14 @@ const DepositMethods = () => {
   };
 
   // Delete deposit method
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this deposit method?"))
-      return;
-
+  const handleDelete = async () => {
     try {
-      await axios.delete(`${URL}/admin/deposit-method/delete/${id}`, {
+      await axios.delete(`${URL}/admin/deposit-method/delete/${deleteId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setMethods(methods.filter((m) => m._id !== id));
+      setMethods(methods.filter((m) => m._id !== deleteId));
+      setShowDeleteModal(false);
+      setDeleteId(null);
     } catch (err) {
       console.error(err);
       alert("Failed to delete deposit method");
@@ -102,6 +103,11 @@ const DepositMethods = () => {
       maxAmount: method.maxAmount,
     });
     setShowEditModal(true);
+  };
+
+  const openDeleteModal = (id) => {
+    setDeleteId(id);
+    setShowDeleteModal(true);
   };
 
   if (loading)
@@ -154,7 +160,7 @@ const DepositMethods = () => {
                         Edit
                       </button>
                       <button
-                        onClick={() => handleDelete(method._id)}
+                        onClick={() => openDeleteModal(method._id)}
                         className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                       >
                         Delete
@@ -193,7 +199,7 @@ const DepositMethods = () => {
                     Edit
                   </button>
                   <button
-                    onClick={() => handleDelete(method._id)}
+                    onClick={() => openDeleteModal(method._id)}
                     className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                   >
                     Delete
@@ -205,11 +211,20 @@ const DepositMethods = () => {
         </div>
       )}
 
-      {/* Glassy Add Modal */}
+      {/* Add Modal */}
       {showAddModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="absolute inset-0 bg-blue-100 bg-opacity-30 backdrop-blur-md"></div>
+          <div
+            className="absolute inset-0 bg-blue-100 bg-opacity-30 backdrop-blur-md"
+            onClick={() => setShowAddModal(false)}
+          ></div>
           <div className="relative bg-white bg-opacity-90 rounded-lg p-6 w-full max-w-md shadow-lg z-10">
+            <button
+              onClick={() => setShowAddModal(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 font-bold text-lg"
+            >
+              ×
+            </button>
             <h3 className="text-lg font-bold mb-4">Add Deposit Method</h3>
             <input
               type="text"
@@ -261,11 +276,20 @@ const DepositMethods = () => {
         </div>
       )}
 
-      {/* Glassy Edit Modal */}
+      {/* Edit Modal */}
       {showEditModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="absolute inset-0 bg-blue-100 bg-opacity-30 backdrop-blur-md"></div>
+          <div
+            className="absolute inset-0 bg-blue-100 bg-opacity-30 backdrop-blur-md"
+            onClick={() => setShowEditModal(false)}
+          ></div>
           <div className="relative bg-white bg-opacity-90 rounded-lg p-6 w-full max-w-md shadow-lg z-10">
+            <button
+              onClick={() => setShowEditModal(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 font-bold text-lg"
+            >
+              ×
+            </button>
             <h3 className="text-lg font-bold mb-4">Edit Deposit Method</h3>
             <input
               type="text"
@@ -311,6 +335,36 @@ const DepositMethods = () => {
                 className="px-4 py-2 rounded bg-yellow-500 text-white hover:bg-yellow-600"
               >
                 Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div
+            className="absolute inset-0 bg-red-100 bg-opacity-30 backdrop-blur-md"
+            onClick={() => setShowDeleteModal(false)}
+          ></div>
+          <div className="relative bg-white bg-opacity-90 rounded-lg p-6 w-full max-w-sm shadow-lg z-10">
+            <h3 className="text-lg font-bold mb-4 text-red-600">
+              Confirm Delete
+            </h3>
+            <p className="mb-4">Are you sure you want to delete this deposit method?</p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="px-4 py-2 rounded border"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 rounded bg-red-500 text-white hover:bg-red-600"
+              >
+                Delete
               </button>
             </div>
           </div>

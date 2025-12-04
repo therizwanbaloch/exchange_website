@@ -74,6 +74,33 @@ const Deposits = () => {
     }
   };
 
+  // Approve / Reject functions
+  const approveDeposit = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post(`${URL}/admin/deposit/approve/${id}`, {}, { headers: { Authorization: `Bearer ${token}` } });
+      alert("Deposit approved!");
+      fetchDeposits(currentPage);
+      setModalOpen(false);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to approve deposit.");
+    }
+  };
+
+  const rejectDeposit = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post(`${URL}/admin/deposit/reject/${id}`, {}, { headers: { Authorization: `Bearer ${token}` } });
+      alert("Deposit rejected!");
+      fetchDeposits(currentPage);
+      setModalOpen(false);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to reject deposit.");
+    }
+  };
+
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
       {/* Sidebar */}
@@ -167,16 +194,22 @@ const Deposits = () => {
           </div>
         </div>
 
-        {/* Modal */}
+        {/* Glassy Modal */}
         {modalOpen && (
-          <div className="fixed inset-0 bg-blue-100 bg-opacity-80 flex justify-center items-center z-50 p-4">
-            <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative animate-fadeIn">
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <div
+              className="absolute inset-0 bg-blue-100/30 backdrop-blur-sm"
+              onClick={() => setModalOpen(false)}
+            ></div>
+            <div className="bg-white rounded-lg shadow-xl p-6 z-10 w-full max-w-md relative">
+              {/* Close Button */}
               <button
                 onClick={() => setModalOpen(false)}
                 className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 font-bold text-lg"
               >
                 ×
               </button>
+
               {modalLoading ? (
                 <div className="flex justify-center items-center py-10">
                   <div className="w-10 h-10 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
@@ -214,6 +247,22 @@ const Deposits = () => {
                         <span className="font-semibold">Notes:</span> {selectedDeposit.notes}
                       </p>
                     )}
+                  </div>
+
+                  {/* Approve / Reject Buttons */}
+                  <div className="flex justify-end gap-3 mt-6">
+                    <button
+                      onClick={() => approveDeposit(selectedDeposit._id)}
+                      className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      onClick={() => rejectDeposit(selectedDeposit._id)}
+                      className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                      Reject
+                    </button>
                   </div>
                 </>
               ) : (

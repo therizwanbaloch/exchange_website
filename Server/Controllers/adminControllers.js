@@ -9,26 +9,74 @@ import jwt from "jsonwebtoken";
 
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().select("-password");
-    if (!users) {
-      res.status(404).json({
-        success: false,
-        message: "No User Found",
-      });
-    }
+    // Extract query params
+    let { page = 1, limit = 20 } = req.query;
 
-    res.status(200).json({
+    page = Number(page) || 1;
+    limit = Number(limit) || 20;
+
+    const skip = (page - 1) * limit;
+
+    // Fetch users with pagination
+    const users = await User.find()
+      .select("-password")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    // Count total users
+    const totalUsers = await User.countDocuments();
+
+    return res.status(200).json({
       success: true,
-      message: "user data Fetched Successfully",
+      message: "Users fetched successfully",
       users,
+      currentPage: page,
+      totalPages: Math.ceil(totalUsers / limit),
+      totalUsers,
     });
   } catch (error) {
-    res.status(401).json({
+    return res.status(500).json({
       success: false,
-      message: `An unknow error Occured While Getting UsersInfo ${error}`,
+      message: "Error fetching users",
+      error: error.message,
     });
   }
 };
+
+// search users by email
+
+export const searchUsersByEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide an email to search",
+      });
+    }
+
+    const users = await User.find({ 
+      email: { $regex: email, $options: "i" } 
+    }).select("-password").sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      message: "Users fetched successfully",
+      users,
+      totalUsers: users.length,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error while searching users",
+      error: error.message,
+    });
+  }
+};
+
+// get recent users
 
 export const getRecentUsers = async (req, res) => {
   try {

@@ -1,6 +1,6 @@
 import express from "express";
 import { adminLogin } from "../Controllers/admin/adminLogin.js";
-import { approveTransaction, createDepositMethod, deleteDepositMethod, getAllDeposits, getAllTickets, getAllUsers, getAllWithdrawals, getDashboardStats, getDepositMethods, getPendingDeposits, getPendingTickets, getPendingWithdraws, getRecentUsers, getTicketDetailsAdmin, rejectTransaction, updateDepositMethod } from "../Controllers/adminControllers.js";
+import { approveTransaction, createDepositMethod, deleteDepositMethod, getAllDeposits, getAllTickets, getAllUsers, getAllWithdrawals, getDashboardStats, getDepositMethods, getPendingDeposits, getPendingTickets, getPendingWithdraws, getRecentUsers, getTicketDetailsAdmin, rejectTransaction, searchUsersByEmail, updateDepositMethod } from "../Controllers/adminControllers.js";
 import { isAdmin } from "../Middlewares/isAdmin.js";
 import { getRates } from "../Controllers/rateControllers.js";
 import { getAllTransactions } from "../Controllers/transController.js";
@@ -13,6 +13,7 @@ const adminRouter = express.Router();
 adminRouter.post("/login", adminLogin)
 
 adminRouter.get("/users",isAdmin, getAllUsers);
+adminRouter.post("/seacrh-user",isAdmin, searchUsersByEmail);
 adminRouter.get("/recent-users",isAdmin, getRecentUsers);
 
 
