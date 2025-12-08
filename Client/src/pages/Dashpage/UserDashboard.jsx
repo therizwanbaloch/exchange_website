@@ -19,7 +19,7 @@ const UserDashboard = () => {
     }
   }, [navigate]);
 
-  // You can still get balances from localStorage if stored, or show 0
+  
   const storedUser = JSON.parse(localStorage.getItem("user")) || {};
   const balancePKR = storedUser?.balances?.find(b => b.currency === "PKR")?.amount || 0;
   const balanceUSD = storedUser?.balances?.find(b => b.currency === "USD")?.amount || 0;
