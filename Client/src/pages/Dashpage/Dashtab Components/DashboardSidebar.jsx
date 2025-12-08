@@ -17,7 +17,7 @@ const DashboardSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const menuItems = [
-    { name: "Dashboard", icon: <FiHome />, path: "/dashboard" },
+    { name: "Dashboard", icon: <FiHome />, path: "/user-dashboard" },
     { name: "Deposit", icon: <FiDownload />, path: "/deposit" },
     { name: "Withdraw", icon: <FiUpload />, path: "/withdraw" },
     { name: "Exchange", icon: <FiRepeat />, path: "/exchange" },

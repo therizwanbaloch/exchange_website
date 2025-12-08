@@ -1,5 +1,5 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import DashboardSidebar from "../Dashpage/Dashtab Components/DashboardSidebar";
 import DashboardNav from "../Dashpage/Dashtab Components/DashboardNav";
 import DashActivity from "../Dashpage/Dashtab Components/DashActivity";
@@ -7,10 +7,22 @@ import Steps from "../Dashpage/Dashtab Components/Steps";
 import WalletCard from "../Dashpage/Dashtab Components/WalletCard";
 
 const UserDashboard = () => {
-  const user = useSelector((state) => state.user.user);
+  const navigate = useNavigate();
 
-  const balancePKR = user?.balances?.find((b) => b.currency === "PKR")?.amount;
-  const balanceUSD = user?.balances?.find((b) => b.currency === "USD")?.amount;
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      // Clear data and redirect
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      navigate("/", { replace: true });
+    }
+  }, [navigate]);
+
+  // You can still get balances from localStorage if stored, or show 0
+  const storedUser = JSON.parse(localStorage.getItem("user")) || {};
+  const balancePKR = storedUser?.balances?.find(b => b.currency === "PKR")?.amount || 0;
+  const balanceUSD = storedUser?.balances?.find(b => b.currency === "USD")?.amount || 0;
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
@@ -22,38 +34,21 @@ const UserDashboard = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Navbar */}
-        <div className="w-full">
-          <DashboardNav />
-        </div>
+        <DashboardNav />
 
         {/* Content Area */}
         <div className="p-4 lg:p-6 flex flex-col gap-6">
           {/* Wallet Cards */}
           <div className="flex flex-col sm:flex-row gap-4">
-            {user && (
-              <>
-                <WalletCard
-                  currency="PKR"
-                  amount={`₨${balancePKR || 0}`}
-                  color="blue"
-                />
-                <WalletCard
-                  currency="USD"
-                  amount={`$${balanceUSD || 0}`}
-                  color="green"
-                />
-              </>
-            )}
+            <WalletCard currency="PKR" amount={`₨${balancePKR}`} color="blue" />
+            <WalletCard currency="USD" amount={`$${balanceUSD}`} color="green" />
           </div>
 
           {/* Activity + Steps */}
           <div className="flex flex-col lg:flex-row gap-6">
-            {/* Activity */}
             <div className="flex-1">
               <DashActivity />
             </div>
-
-            {/* Steps */}
             <div className="lg:w-1/3">
               <Steps />
             </div>

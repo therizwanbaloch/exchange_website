@@ -18,158 +18,141 @@ import AllTickets from "./pages/admin/AllTickets";
 import TicketDetails from "./pages/admin/DashComponents/TicketDetails";
 import NotFound from "./pages/NotFound";
 
-
-const PrivateRoute = ({ children }) => {
-  const token = localStorage.getItem("token");
-  return token ? children : <Navigate to="/login" replace />;
-};
-
-const AdminRoute = ({ children }) => {
-  const token = localStorage.getItem("token");
-  return token ? children : <Navigate to="/admin-login" replace />;
-};
-
 const App = () => {
   const token = localStorage.getItem("token");
+
+  const ProtectedRoute = ({ children }) => {
+    return token ? children : <Navigate to="/" replace />;
+  };
 
   return (
     <Routes>
       {/* Public Routes */}
-      <Route
-        path="/"
-        element={token ? <Navigate to="/user-dashboard" replace /> : <LandingPage />}
-      />
-      <Route
-        path="/login"
-        element={token ? <Navigate to="/user-dashboard" replace /> : <Login />}
-      />
-      <Route
-        path="/register"
-        element={token ? <Navigate to="/user-dashboard" replace /> : <Register />}
-      />
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
 
       {/* User Protected Routes */}
       <Route
         path="/user-dashboard"
         element={
-          <PrivateRoute>
+          <ProtectedRoute>
             <UserDashboard />
-          </PrivateRoute>
+          </ProtectedRoute>
         }
       />
       <Route
         path="/deposit"
         element={
-          <PrivateRoute>
+          <ProtectedRoute>
             <ComingSoon />
-          </PrivateRoute>
+          </ProtectedRoute>
         }
       />
       <Route
         path="/withdraw"
         element={
-          <PrivateRoute>
+          <ProtectedRoute>
             <ComingSoon />
-          </PrivateRoute>
+          </ProtectedRoute>
         }
       />
       <Route
         path="/send"
         element={
-          <PrivateRoute>
+          <ProtectedRoute>
             <ComingSoon />
-          </PrivateRoute>
+          </ProtectedRoute>
         }
       />
       <Route
         path="/request"
         element={
-          <PrivateRoute>
+          <ProtectedRoute>
             <ComingSoon />
-          </PrivateRoute>
+          </ProtectedRoute>
         }
       />
       <Route
         path="/tickets"
         element={
-          <PrivateRoute>
+          <ProtectedRoute>
             <DashboardTickets />
-          </PrivateRoute>
+          </ProtectedRoute>
         }
       />
       <Route
         path="/contact-us"
         element={
-          <PrivateRoute>
+          <ProtectedRoute>
             <ContactUsForm />
-          </PrivateRoute>
+          </ProtectedRoute>
         }
       />
 
-      {/* Admin Routes */}
-      <Route path="/admin-login" element={<AdminLogin />} />
+      {/* Admin Protected Routes */}
       <Route
         path="/admin"
         element={
-          <AdminRoute>
+          <ProtectedRoute>
             <AdminDashboard />
-          </AdminRoute>
+          </ProtectedRoute>
         }
       />
       <Route
         path="/admin/manage-users"
         element={
-          <AdminRoute>
+          <ProtectedRoute>
             <ManageUsers />
-          </AdminRoute>
+          </ProtectedRoute>
         }
       />
       <Route
         path="/admin/deposits"
         element={
-          <AdminRoute>
+          <ProtectedRoute>
             <Deposits />
-          </AdminRoute>
+          </ProtectedRoute>
         }
       />
       <Route
         path="/admin/withdrawals"
         element={
-          <AdminRoute>
+          <ProtectedRoute>
             <Withdrawals />
-          </AdminRoute>
+          </ProtectedRoute>
         }
       />
       <Route
         path="/admin/custom-rates"
         element={
-          <AdminRoute>
+          <ProtectedRoute>
             <CustomRates />
-          </AdminRoute>
+          </ProtectedRoute>
         }
       />
       <Route
         path="/admin/deposit-methods"
         element={
-          <AdminRoute>
+          <ProtectedRoute>
             <DepositMethods />
-          </AdminRoute>
+          </ProtectedRoute>
         }
       />
       <Route
         path="/admin/all-tickets"
         element={
-          <AdminRoute>
+          <ProtectedRoute>
             <AllTickets />
-          </AdminRoute>
+          </ProtectedRoute>
         }
       />
       <Route
         path="/admin/ticket/:id"
         element={
-          <AdminRoute>
+          <ProtectedRoute>
             <TicketDetails />
-          </AdminRoute>
+          </ProtectedRoute>
         }
       />
 

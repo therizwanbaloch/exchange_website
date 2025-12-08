@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-// import { useDispatch } from "react-redux";
-// import { setUserData } from "../redux/userSlice";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -10,7 +8,6 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
   const URL = import.meta.env.VITE_API_URL;
 
   const handleSubmit = async (e) => {
@@ -23,14 +20,12 @@ const Register = () => {
         { name, email, password },
       );
 
-  
       const token = response.data?.token;
       if (token) {
         localStorage.setItem("token", token);
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       }
 
-      // dispatch(setUserData(response.data.user));
       navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");

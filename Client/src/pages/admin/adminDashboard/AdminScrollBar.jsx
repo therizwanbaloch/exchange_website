@@ -2,10 +2,18 @@ import React from "react";
 import { MdDashboard } from "react-icons/md";
 import { FaUsers, FaMoneyBillAlt, FaCoins, FaHeadset } from "react-icons/fa";
 import { RiMoneyDollarCircleFill } from "react-icons/ri";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { FaSignOutAlt } from "react-icons/fa";
 
 const AdminScrollBar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/admin-login");
+  };
 
   const menuItems = [
     { label: "Dashboard", icon: <MdDashboard size={24} />, link: "/admin" },
@@ -13,6 +21,11 @@ const AdminScrollBar = () => {
     { label: "Deposits", icon: <FaMoneyBillAlt size={24} />, link: "/admin/deposits" },
     { label: "Deposit Methods", icon: <FaCoins size={24} />, link: "/admin/deposit-methods" },
     { label: "Custom Rates", icon: <RiMoneyDollarCircleFill size={24} />, link: "/admin/custom-rates" },
+
+    // ➕ NEWLY ADDED ITEMS
+    { label: "Cashouts", icon: <FaMoneyBillAlt size={24} />, link: "/admin/withdraws" },
+    { label: "Cashout Methods", icon: <FaCoins size={24} />, link: "/admin/withdraw-methods" },
+
     { label: "Support Tickets", icon: <FaHeadset size={24} />, link: "/admin/all-tickets" },
   ];
 
@@ -21,7 +34,8 @@ const AdminScrollBar = () => {
       {/* Desktop Sidebar */}
       <div className="hidden lg:flex flex-col fixed top-0 left-0 h-full w-64 bg-[#1E3A8A] text-white p-6 shadow-lg">
         <h1 className="text-2xl font-bold mb-10">PKRSpot</h1>
-        <nav className="flex flex-col gap-4">
+
+        <nav className="flex flex-col gap-4 flex-1">
           {menuItems.map((item, idx) => {
             const isActive = location.pathname === item.link;
             return (
@@ -38,6 +52,15 @@ const AdminScrollBar = () => {
             );
           })}
         </nav>
+
+        {/* ➕ LOGOUT BUTTON */}
+        <button
+          onClick={handleLogout}
+          className="mt-6 flex items-center gap-3 p-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-all"
+        >
+          <FaSignOutAlt size={22} />
+          <span className="text-sm font-medium">Logout</span>
+        </button>
       </div>
 
       {/* Mobile Bottom Nav */}
@@ -53,11 +76,14 @@ const AdminScrollBar = () => {
               }`}
             >
               {item.icon}
-              {/* Optional: show label below icon */}
-              {/* <span className="text-xs">{item.label}</span> */}
             </Link>
           );
         })}
+
+        {/* ➕ Mobile Logout Icon */}
+        <button onClick={handleLogout} className="flex flex-col items-center text-red-600">
+          <FaSignOutAlt size={24} />
+        </button>
       </div>
     </>
   );

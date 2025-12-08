@@ -1,8 +1,57 @@
-import React from "react";
-import useRecentTransactions from "../../../hooks/useRecentTransactions";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const DashActivity = () => {
-  const { recent, loading, error } = useRecentTransactions();
+  const [recent, setRecent] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const URL = import.meta.env.VITE_API_URL;
+
+  useEffect(() => {
+    const fetchRecent = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get(`${URL}/transactions/recent-transactions`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setRecent(res.data?.transactions || []);
+      } catch (err) {
+        setError("Failed to load activity");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecent();
+  }, [URL]);
+
+  // 🔵 Fancy skeleton loader UI
+  const SkeletonRow = () => (
+    <tr className="animate-pulse">
+      <td className="py-3 px-4">
+        <div className="h-4 bg-gray-200 rounded w-20"></div>
+      </td>
+      <td className="py-3 px-4">
+        <div className="h-4 bg-gray-200 rounded w-16"></div>
+      </td>
+      <td className="py-3 px-4">
+        <div className="h-4 bg-gray-200 rounded w-24"></div>
+      </td>
+      <td className="py-3 px-4">
+        <div className="h-4 bg-gray-200 rounded w-16"></div>
+      </td>
+      <td className="py-3 px-4">
+        <div className="h-4 bg-gray-200 rounded w-20"></div>
+      </td>
+      <td className="py-3 px-4 text-center">
+        <div className="h-4 bg-gray-200 rounded w-10 mx-auto"></div>
+      </td>
+    </tr>
+  );
 
   return (
     <div className="bg-white rounded-2xl shadow-md p-6 w-full overflow-x-auto">
@@ -12,9 +61,13 @@ const DashActivity = () => {
       </h2>
 
       {loading ? (
-        <div className="text-center py-6 text-gray-500 animate-pulse">
-          Loading transactions...
-        </div>
+        <table className="min-w-full border-collapse">
+          <tbody>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <SkeletonRow key={i} />
+            ))}
+          </tbody>
+        </table>
       ) : error ? (
         <div className="text-center py-6 text-red-500">{error}</div>
       ) : recent && recent.length > 0 ? (
@@ -26,9 +79,11 @@ const DashActivity = () => {
               <th className="py-3 px-4 font-semibold">Wallet</th>
               <th className="py-3 px-4 font-semibold">Amount</th>
               <th className="py-3 px-4 font-semibold">Status</th>
+              <th className="py-3 px-4 font-semibold">TxID</th>
               <th className="py-3 px-4 font-semibold text-center">Action</th>
             </tr>
           </thead>
+
           <tbody>
             {recent.map((tx) => (
               <tr
@@ -38,6 +93,7 @@ const DashActivity = () => {
                 <td className="py-3 px-4 text-gray-700 text-sm">
                   {new Date(tx.createdAt).toLocaleDateString()}
                 </td>
+
                 <td
                   className={`py-3 px-4 text-sm font-medium ${
                     tx.type === "deposit"
@@ -49,12 +105,15 @@ const DashActivity = () => {
                 >
                   {tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}
                 </td>
+
                 <td className="py-3 px-4 text-sm text-gray-600">
                   {tx.toWallet || "-"}
                 </td>
+
                 <td className="py-3 px-4 text-sm font-semibold text-gray-800">
                   ${tx.amount}
                 </td>
+
                 <td
                   className={`py-3 px-4 text-sm font-medium ${
                     tx.status === "pending"
@@ -66,6 +125,11 @@ const DashActivity = () => {
                 >
                   {tx.status}
                 </td>
+
+                <td className="py-3 px-4 text-sm text-gray-600">
+                  {tx.txid ? tx.txid : "N/A"}
+                </td>
+
                 <td className="py-3 px-4 text-center">
                   <button className="text-blue-600 hover:underline text-sm font-medium">
                     View
