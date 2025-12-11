@@ -12,7 +12,7 @@ const DataSection = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const token = localStorage.getItem('token'); // admin token
+        const token = localStorage.getItem('token'); 
         const res = await axios.get(`${URL}/admin/stats`, {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -27,7 +27,7 @@ const DataSection = () => {
     fetchStats();
   }, [URL]);
 
-  // Loading skeleton with icons
+  
   if (loading)
     return (
       <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-10 mr-4 ml-0'>

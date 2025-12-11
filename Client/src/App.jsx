@@ -32,6 +32,9 @@ const App = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
+      {/* NEW ADMIN LOGIN ROUTE */}
+      <Route path="/admin-login" element={<AdminLogin />} />
+
       {/* User Protected Routes */}
       <Route
         path="/user-dashboard"
@@ -156,7 +159,7 @@ const App = () => {
         }
       />
 
-      {/* Fallback */}
+      {/* Fallback Route */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

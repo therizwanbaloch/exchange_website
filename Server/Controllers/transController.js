@@ -1,55 +1,84 @@
 import Transaction from "../models/Transaction.js";
 import User from "../models/User.js";
+import depositMethod from "../models/depositMethod.js"
 
 
-export const deposit = async (req, res) => {
+export const getGatewayNames = async (req, res) => {
   try {
-    const userId = req.user?.id;
-    const { amount, wallet } = req.body;
-
     
-    if (!userId) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized access – please log in again.",
-      });
-    }
+    const methods = await depositMethod.find({}, { gateway: 1, _id: 1 });
+    return res.status(200).json({ success: true, methods });
+  } catch (error) {
+    console.error("Error fetching gateway names:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch gateway names.",
+    });
+  }
+};
 
-  
-    if (!amount || isNaN(amount) || amount <= 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Please enter a valid amount greater than zero.",
-      });
-    }
+// get gateway details by id
 
-    
-    if (!wallet || !["PKR", "USD", "GBP"].includes(wallet)) {
-      return res.status(400).json({
-        success: false,
-        message: "Please select a valid wallet (PKR, USD, or GBP).",
-      });
-    }
+export const getGatewayDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-    
-    const user = await User.findById(userId);
-    if (!user) {
+    const method = await depositMethod.findById(id);
+
+    if (!method) {
       return res.status(404).json({
         success: false,
-        message: "User not found. Please try again.",
+        message: "Deposit method not found.",
       });
     }
 
-    if (!user.wallet) {
-      user.wallet = { PKR: 0, USD: 0, GBP: 0 };
-      await user.save();
+    return res.status(200).json({ success: true, method });
+  } catch (error) {
+    console.error("Error fetching gateway details:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch gateway details.",
+    });
+  }
+};
+
+//deposit 
+export const createDeposit = async (req, res) => {
+  try {
+    const userId = req.user?.id;
+    const { methodId, amount, transactionId } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized access" });
+    }
+
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ success: false, message: "Please enter a valid amount" });
+    }
+
+    if (!transactionId) {
+      return res.status(400).json({ success: false, message: "Transaction ID is required" });
+    }
+
+    const method = await depositMethod.findById(methodId);
+    if (!method) {
+      return res.status(404).json({ success: false, message: "Selected deposit method not found" });
+    }
+
+    if (amount < method.minAmount || amount > method.maxAmount) {
+      return res.status(400).json({
+        success: false,
+        message: `Amount must be between ${method.minAmount} and ${method.maxAmount}`,
+      });
     }
 
     const transaction = new Transaction({
       user: userId,
       type: "deposit",
-      toWallet: wallet,
+      toWallet: method.address,       
       amount,
+      transactionId,
+      paymentApp: method.currency,
       status: "pending",
     });
 
@@ -57,14 +86,15 @@ export const deposit = async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      message: `Deposit request to ${wallet} wallet submitted successfully. Awaiting admin approval.`,
+      message: "Deposit request submitted. Awaiting admin approval.",
       transaction,
     });
+
   } catch (error) {
     console.error("Deposit Error:", error.message);
     return res.status(500).json({
       success: false,
-      message: "Something went wrong on the server.",
+      message: "Server error",
       error: error.message,
     });
   }

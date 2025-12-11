@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-// import { useDispatch } from "react-redux";
-// import { setUserData } from "../redux/userSlice";
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
+
   const URL = import.meta.env.VITE_API_URL;
 
   const handleSubmit = async (e) => {
@@ -40,7 +38,6 @@ const AdminLogin = () => {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; 
       }
 
-      // dispatch(setUserData(response.data.user));
       navigate("/admin");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");

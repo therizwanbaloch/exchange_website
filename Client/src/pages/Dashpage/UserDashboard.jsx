@@ -12,7 +12,7 @@ const UserDashboard = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      // Clear data and redirect
+      
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       navigate("/", { replace: true });
