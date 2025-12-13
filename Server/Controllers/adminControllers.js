@@ -3,7 +3,7 @@ import Transaction from "../models/Transaction.js";
 import User from "../models/User.js";
 import DepositMethod from "../models/depositMethod.js";
 import jwt from "jsonwebtoken";
-
+import WithdrawalMethod from "../models/WithdrawalMethod.js"
 
 //get all users
 
@@ -137,55 +137,95 @@ export const getAllTickets = async (req, res) => {
 
 
  // Approve Transaction
+
 export const approveTransaction = async (req, res) => {
   try {
     const { id } = req.params;
 
+    
     const transaction = await Transaction.findById(id);
-
     if (!transaction) {
-      return res.status(404).json({ message: "Transaction not found" });
+      return res.status(404).json({ success: false, message: "Transaction not found" });
     }
 
+    
+    if (transaction.status === "approved") {
+      return res.status(400).json({ success: false, message: "Transaction already approved" });
+    }
+
+    
+    const user = await User.findById(transaction.user);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+  
+    const currency = transaction.paymentApp;
+    if (!user.wallet[currency]) {
+      
+      user.wallet[currency] = 0;
+    }
+    user.wallet[currency] += transaction.amount;
+
+    
+    await user.save();
+
+    
     transaction.status = "approved";
     await transaction.save();
 
     return res.status(200).json({
       success: true,
-      message: "Transaction approved successfully",
+      message: "Transaction approved successfully and wallet updated",
       transaction,
+      wallet: user.wallet
     });
   } catch (error) {
     console.error("Error approving transaction:", error);
-    return res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ success: false, message: "Server error", error: error.message });
   }
 };
 
+
 // Reject Transaction
+
+
 export const rejectTransaction = async (req, res) => {
   try {
     const { id } = req.params;
 
+    
     const transaction = await Transaction.findById(id);
 
     if (!transaction) {
       return res.status(404).json({ message: "Transaction not found" });
     }
 
+    
+    const user = await User.findById(transaction.user);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    
+    user.wallet[transaction.fromWallet] += transaction.amount;
+    await user.save();
+
+    
     transaction.status = "rejected";
     await transaction.save();
 
     return res.status(200).json({
       success: true,
-      message: "Transaction rejected successfully",
+      message: "Transaction rejected and amount returned to wallet",
       transaction,
     });
   } catch (error) {
-    console.error("Error rejecting transaction:", error);
+    console.error("Reject transaction error:", error);
     return res.status(500).json({ message: "Server error" });
   }
 };
-
 
 
 // get all despoits ...
@@ -491,5 +531,53 @@ export const getDepositByTransactionId = async (req, res) => {
       success: false,
       message: "Server error",
     });
+  }
+};
+
+
+// get all withdrawal methods 
+
+export const getWithdrawalMethods = async (req, res) => {
+  try {
+    const methods = await WithdrawalMethod.find().sort({ createdAt: -1 });
+    res.status(200).json({ success: true, methods });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Failed to fetch methods" });
+  }
+};
+
+// create withdrawal method 
+
+export const createWithdrawalMethod = async (req, res) => {
+  try {
+    const { name } = req.body;
+    if (!name || !name.trim()) {
+      return res.status(400).json({ success: false, message: "Method name is required" });
+    }
+
+    const method = await WithdrawalMethod.create({ name: name.trim() });
+
+    res.status(201).json({ success: true, method });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Failed to create method" });
+  }
+};
+
+// delete withdrawal method 
+
+export const deleteWithdrawalMethod = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const method = await WithdrawalMethod.findById(id);
+    if (!method) {
+      return res.status(404).json({ success: false, message: "Method not found" });
+    }
+
+    await method.deleteOne();
+
+    res.status(200).json({ success: true, message: "Withdrawal method deleted" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Failed to delete method" });
   }
 };

@@ -1,6 +1,6 @@
 import express from "express";
 import { adminLogin } from "../Controllers/admin/adminLogin.js";
-import { approveTransaction, createDepositMethod, deleteDepositMethod, getAllDeposits, getAllTickets, getAllUsers, getAllWithdrawals, getDashboardStats, getDepositById, getDepositByTransactionId, getDepositMethods, getPendingDeposits, getPendingTickets, getPendingWithdraws, getRecentUsers, getTicketDetailsAdmin, rejectTransaction, searchUsersByEmail, updateDepositMethod } from "../Controllers/adminControllers.js";
+import { approveTransaction, createDepositMethod, createWithdrawalMethod, deleteDepositMethod, deleteWithdrawalMethod, getAllDeposits, getAllTickets, getAllUsers, getAllWithdrawals, getDashboardStats, getDepositById, getDepositByTransactionId, getDepositMethods, getPendingDeposits, getPendingTickets, getPendingWithdraws, getRecentUsers, getTicketDetailsAdmin, getWithdrawalMethods, rejectTransaction, searchUsersByEmail, updateDepositMethod } from "../Controllers/adminControllers.js";
 import { isAdmin } from "../Middlewares/isAdmin.js";
 import { getRates } from "../Controllers/rateControllers.js";
 import { getAllTransactions } from "../Controllers/transController.js";
@@ -25,9 +25,11 @@ adminRouter.get("/p-deposits", isAdmin , getPendingDeposits )
 adminRouter.get("/withdraws", isAdmin , getAllWithdrawals )
 adminRouter.get("/p-withdraws", isAdmin , getPendingWithdraws );
 adminRouter.post("/deposit-method", isAdmin , createDepositMethod);
-adminRouter.get("/deposit-methods", isAdmin , getDepositMethods);
+adminRouter.post("/withdraw-method", isAdmin , createWithdrawalMethod);
+adminRouter.get("/withdraw-methods",  getWithdrawalMethods);
 adminRouter.put("/deposit-method/update/:id", isAdmin, updateDepositMethod);
 adminRouter.delete("/deposit-method/delete/:id", isAdmin, deleteDepositMethod)
+adminRouter.delete("/withdraw-method/delete/:id", isAdmin, deleteWithdrawalMethod)
 adminRouter.get("/deposit/:id", isAdmin , getDepositById);
 adminRouter.get("/deposit-methods", isAdmin , getDepositMethods);
 adminRouter.get("/deposit/tx/:id", isAdmin , getDepositByTransactionId);

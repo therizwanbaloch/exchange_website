@@ -1,6 +1,7 @@
 import Transaction from "../models/Transaction.js";
 import User from "../models/User.js";
 import depositMethod from "../models/depositMethod.js"
+import Rate from "../models/Rate.js"
 
 
 export const getGatewayNames = async (req, res) => {
@@ -43,6 +44,7 @@ export const getGatewayDetails = async (req, res) => {
 };
 
 //deposit 
+
 export const createDeposit = async (req, res) => {
   try {
     const userId = req.user?.id;
@@ -100,82 +102,54 @@ export const createDeposit = async (req, res) => {
   }
 };
 
+// Withdraw 
 
 export const withdraw = async (req, res) => {
   try {
-    const userId = req.user?.id;
-    const { amount, wallet } = req.body;
+    const { wallet, methodId, amount, holderName } = req.body;
+    const userId = req.user.id; 
 
-    
-    if (!userId) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized access – please log in.",
-      });
+    if (!wallet || !amount || !holderName || !methodId) {
+      return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
-    
-    if (!amount || isNaN(amount) || amount <= 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Please enter a valid withdrawal amount greater than zero.",
-      });
-    }
-
-    
-    if (!wallet || !["PKR", "USD", "GBP"].includes(wallet)) {
-      return res.status(400).json({
-        success: false,
-        message: "Please select a valid wallet.",
-      });
-    }
-
-    
     const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found.",
-      });
-    }
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
 
-    
-    if (!user.wallet) {
-      user.wallet = { PKR: 0, USD: 0, GBP: 0 };
-      await user.save();
-    }
-
-    
     if (user.wallet[wallet] < amount) {
-      return res.status(400).json({
-        success: false,
-        message: `Insufficient balance in ${wallet} wallet.`,
-      });
+      return res.status(400).json({ success: false, message: "Insufficient balance" });
     }
+
+    
+    user.wallet[wallet] -= amount;
+    await user.save();
+
+    
+    const afterFeeAmount = parseFloat((amount * 0.99).toFixed(2));
 
     
     const transaction = new Transaction({
-      user: userId,
+      user: user._id,
       type: "withdraw",
       fromWallet: wallet,
-      amount,
+      amount: amount, 
+      convertedAmount: afterFeeAmount, 
       status: "pending",
+      paymentApp: methodId,
+      transactionId: "N/A", 
     });
 
     await transaction.save();
 
-    return res.status(201).json({
+    res.status(200).json({
       success: true,
-      message: "Withdrawal request submitted successfully. Admin will review it.",
+      message: `Withdrawal submitted successfully! You will receive ${afterFeeAmount} ${wallet}`,
       transaction,
+      balance: user.wallet,
     });
-  } catch (error) {
-    console.error("Withdraw Error:", error.message);
-    return res.status(500).json({
-      success: false,
-      message: "Server error",
-      error: error.message,
-    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
@@ -250,5 +224,69 @@ export const getDepositById = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Get conversion amount
+
+export const getConversionAmount = async (req, res) => {
+  try {
+    const { from, to, amount } = req.body;
+
+    if (!from || !to || !amount || amount <= 0) {
+      return res.status(400).json({ success: false, message: "Invalid input" });
+    }
+
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+    if (user.wallet[from] < amount) {
+      return res.status(400).json({ success: false, message: `Insufficient ${from} balance` });
+    }
+
+    const rateDoc = await Rate.findOne({ fromCurrency: from, toCurrency: to });
+    if (!rateDoc) return res.status(404).json({ success: false, message: "Exchange rate not found" });
+
+    const receiveAmount = amount * rateDoc.rate;
+
+    res.json({ success: true, receiveAmount });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// Perform actual exchange
+
+export const performExchange = async (req, res) => {
+  try {
+    const { from, to, amount } = req.body;
+
+    if (!from || !to || !amount || amount <= 0) {
+      return res.status(400).json({ success: false, message: "Invalid input" });
+    }
+
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+    if (user.wallet[from] < amount) {
+      return res.status(400).json({ success: false, message: `Insufficient ${from} balance` });
+    }
+
+    const rateDoc = await Rate.findOne({ fromCurrency: from, toCurrency: to });
+    if (!rateDoc) return res.status(404).json({ success: false, message: "Exchange rate not found" });
+
+    const receiveAmount = amount * rateDoc.rate;
+
+    
+    user.wallet[from] -= amount;
+    user.wallet[to] += receiveAmount;
+
+    await user.save();
+
+    res.json({ success: true, message: "Exchange successful", receiveAmount, wallet: user.wallet });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };

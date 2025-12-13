@@ -5,7 +5,7 @@ import connectDB from "./config/db.js";
 
 
 import authRouter from "./Routes/authRoutes.js";
-// import userRouter from "./routes/userRoutes.js";
+// import userRouter from "./Routes/userRoutes.js";
 // import supportRouter from "./routes/supportRoutes.js";
 import rateRouter from "./Routes/rateRoutes.js";
 // import adminRouter from "./routes/adminRoutes.js";
@@ -31,11 +31,11 @@ app.use(express.json());
 
 app.use("/api/auth", authRouter);
 // app.use("/api/user", userRouter);
+app.use("/api/user-data", userdataRouter)
 app.use("/api/support", supportRouter);
 app.use("/api/rates", rateRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/users", userdataRouter);
-app.use("/api/admin/", adminRouter)
 app.use("/api/transactions", transactionRouter);
 
 app.use("/api/admin", adminRouter)
