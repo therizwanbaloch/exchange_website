@@ -11,7 +11,7 @@ const DashboardNav = () => {
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(false);
 
   // Fetch user from API
   useEffect(() => {
@@ -32,7 +32,7 @@ const DashboardNav = () => {
         const data = await res.json();
         setUser(data.user);
       } catch (err) {
-        setError("Unable to load user data");
+        setError(true); // Set error to true
       } finally {
         setLoading(false);
       }
@@ -59,7 +59,9 @@ const DashboardNav = () => {
             <div className="h-4 w-40 bg-gray-300 rounded"></div>
           </div>
         ) : error ? (
-          <div className="text-red-500 text-sm">{error}</div>
+          <div className="text-blue-600 font-semibold text-lg">
+            PKRSPOT
+          </div>
         ) : (
           <div className="flex items-center gap-2">
             <FiHome className="text-base text-blue-600" />
@@ -75,13 +77,13 @@ const DashboardNav = () => {
           {loading ? (
             <div className="h-4 w-20 bg-gray-200 rounded animate-pulse"></div>
           ) : (
-            <a
-              href="#"
+            <button
+              onClick={() => navigate("/recent-activity")}
               className="flex items-center gap-1 hover:text-blue-700 transition-colors"
             >
               <GrHistory className="text-base" />
               <span className="hidden md:inline">All Activity</span>
-            </a>
+            </button>
           )}
 
           {/* Support */}
@@ -101,13 +103,13 @@ const DashboardNav = () => {
           {loading ? (
             <div className="h-4 w-20 bg-gray-200 rounded animate-pulse"></div>
           ) : (
-            <a
-              href="#"
+            <button
+              onClick={() => navigate("/profile")}
               className="flex items-center gap-1 hover:text-blue-700 transition-colors"
             >
               <IoSettingsOutline className="text-base" />
               <span className="hidden md:inline">Settings</span>
-            </a>
+            </button>
           )}
 
           {/* Logout */}

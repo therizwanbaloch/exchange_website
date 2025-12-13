@@ -17,6 +17,11 @@ import DepositMethods from "./pages/admin/DepositMethods";
 import AllTickets from "./pages/admin/AllTickets";
 import TicketDetails from "./pages/admin/DashComponents/TicketDetails";
 import NotFound from "./pages/NotFound";
+import DepositPage from "./pages/Dashpage/DepositPage";
+import ExchangePage from "./pages/Dashpage/ExchangePage";
+import WithdrawalPage from "./pages/Dashpage/WithdrawalPage";
+import AdminWithdrawalMethods from "./pages/admin/AdminWithdrawalMethods";
+
 
 const App = () => {
   const token = localStorage.getItem("token");
@@ -44,11 +49,21 @@ const App = () => {
           </ProtectedRoute>
         }
       />
+
+      <Route
+        path="/exchange"
+        element={
+          <ProtectedRoute>
+            <ExchangePage />
+          </ProtectedRoute>
+        }
+      />
+
       <Route
         path="/deposit"
         element={
           <ProtectedRoute>
-            <ComingSoon />
+            <DepositPage />
           </ProtectedRoute>
         }
       />
@@ -56,7 +71,7 @@ const App = () => {
         path="/withdraw"
         element={
           <ProtectedRoute>
-            <ComingSoon />
+            <WithdrawalPage />
           </ProtectedRoute>
         }
       />
@@ -155,6 +170,15 @@ const App = () => {
         element={
           <ProtectedRoute>
             <TicketDetails />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/withdraw-methods"
+        element={
+          <ProtectedRoute>
+            <AdminWithdrawalMethods/>
           </ProtectedRoute>
         }
       />
