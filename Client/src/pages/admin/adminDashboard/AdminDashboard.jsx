@@ -1,5 +1,5 @@
 import React from 'react';
-import AdminScrollBar from './adminScrollBar';
+import AdminScrollBar from './AdminScrollBar';
 import DataSection from '../DashComponents/DataSection';
 import PendingDeposits from '../DashComponents/PendingDeposits';
 import PendingWithdraw from '../DashComponents/PendingWithdraw';
