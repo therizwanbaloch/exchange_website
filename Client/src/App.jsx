@@ -21,6 +21,7 @@ import DepositPage from "./pages/Dashpage/DepositPage";
 import ExchangePage from "./pages/Dashpage/ExchangePage";
 import WithdrawalPage from "./pages/Dashpage/WithdrawalPage";
 import AdminWithdrawalMethods from "./pages/admin/AdminWithdrawalMethods";
+import ProfilePage from "./pages/Dashpage/ProfilePage";
 
 
 const App = () => {
@@ -99,6 +100,17 @@ const App = () => {
           </ProtectedRoute>
         }
       />
+
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
+        }
+      />
+
+
       <Route
         path="/contact-us"
         element={

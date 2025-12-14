@@ -1,4 +1,7 @@
 import SupportTicket from "../models/SupportTicket.js";
+import mongoose from "mongoose";
+
+
 
 export const createTicket = async (req, res) => {
   try {
@@ -40,24 +43,24 @@ export const getUserTickets = async (req, res) => {
   }
 };
 
+// Get details of a specific ticket 
 
-export const getTicketDetails = async (req, res) => {
+ export const getTicketDetails = async (req, res) => {
   try {
-    const userId = req.user.id; 
+    const userId = new mongoose.Types.ObjectId(req.user.id);
     const ticketId = req.params.ticketId;
 
     const ticket = await SupportTicket.findOne({
       _id: ticketId,
-      userId: userId
+      userId: userId,
     });
 
     if (!ticket) {
-      return res.status(404).json({ message: "Ticket not found" });
+      return res.status(404).json({ message: "Ticket not found or access denied" });
     }
 
     res.status(200).json({ ticket });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 };

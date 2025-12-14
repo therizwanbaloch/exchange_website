@@ -79,7 +79,7 @@ const ContactUsForm = () => {
                   you soon.
                 </p>
                 <button
-                  onClick={() => navigate("/")}
+                  onClick={() => navigate("/user-dashboard")}
                   className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-max"
                 >
                   Back to Dashboard
