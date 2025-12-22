@@ -15,7 +15,23 @@ dotenv.config();
 const app = express();
 app.use(express.json())
 
-app.use(cors());
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (
+        ["http://localhost:5173", "https://pkrspot.vercel.app"].includes(origin)
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
+
 
 app.use("/api/auth", authRouter);
 app.use("/api/user-data", userdataRouter);
