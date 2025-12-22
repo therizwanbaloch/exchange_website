@@ -3,43 +3,27 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
 
-
 import authRouter from "./Routes/authRoutes.js";
-// import userRouter from "./Routes/userRoutes.js";
-// import supportRouter from "./routes/supportRoutes.js";
 import rateRouter from "./Routes/rateRoutes.js";
-// import adminRouter from "./routes/adminRoutes.js";
-// import walletRouter from "./routes/walletRoutes.js";
 import transactionRouter from "./Routes/transactionRoutes.js";
 import adminRouter from "./Routes/adminRoutes.js";
 import userdataRouter from "./Routes/userDataRoutes.js";
 import supportRouter from "./Routes/supportRoutes.js";
-// import requestRouter from "./routes/requestRoutes.js";
 
 dotenv.config();
-
 
 const app = express();
 app.use(express.json())
 
-app.use(cors({
-  origin: "https://pkrspot.vercel.app",
-  credentials: true,
-}));
-app.use(express.json());
-
+app.use(cors());
 
 app.use("/api/auth", authRouter);
-// app.use("/api/user", userRouter);
-app.use("/api/user-data", userdataRouter)
+app.use("/api/user-data", userdataRouter);
 app.use("/api/support", supportRouter);
 app.use("/api/rates", rateRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/users", userdataRouter);
 app.use("/api/transactions", transactionRouter);
-
-app.use("/api/admin", adminRouter)
-
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
