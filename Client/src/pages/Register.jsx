@@ -26,7 +26,7 @@ const Register = () => {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       }
 
-      navigate("/");
+      navigate("/user-dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");
     }
