@@ -2,7 +2,11 @@ import mongoose from "mongoose";
 
 const transactionSchema = new mongoose.Schema(
   {
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
 
     type: {
       type: String,
@@ -17,10 +21,14 @@ const transactionSchema = new mongoose.Schema(
     convertedAmount: { type: Number },
     rate: { type: Number },
 
-    
     transactionId: { type: String, required: true },
 
-    paymentApp: { type: String },
+    paymentApp: { type: String }, 
+
+  
+    holderName: { type: String },
+    accountNumber: { type: String },
+    methodName: { type: String }, 
 
     status: {
       type: String,

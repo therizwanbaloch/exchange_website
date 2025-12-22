@@ -4,119 +4,147 @@ import axios from "axios";
 const PendingWithdraw = () => {
   const [pendingWithdraws, setPendingWithdraws] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedWithdraw, setSelectedWithdraw] = useState(null);
 
   const URL = import.meta.env.VITE_API_URL;
+  const token = localStorage.getItem("token");
+
+  const fetchWithdraws = async () => {
+    try {
+      const res = await axios.get(`${URL}/admin/p-withdraws`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setPendingWithdraws(Array.isArray(res.data) ? res.data : []);
+    } catch (err) {
+      console.error(err);
+      setPendingWithdraws([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchWithdraws = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const res = await axios.get(`${URL}/admin/p-withdraws`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setPendingWithdraws(Array.isArray(res.data) ? res.data : []);
-      } catch (err) {
-        console.error(err);
-        setPendingWithdraws([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchWithdraws();
-  }, [URL]);
+  }, []);
+
+  const handleApprove = async () => {
+    try {
+      await axios.put(
+        `${URL}/admin/transactions/${selectedWithdraw._id}/approve`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert("Withdrawal Approved");
+      setSelectedWithdraw(null);
+      fetchWithdraws();
+    } catch (err) {
+      alert("Approve failed");
+    }
+  };
+
+  const handleReject = async () => {
+    try {
+      await axios.put(
+        `${URL}/admin/transactions/${selectedWithdraw._id}/reject`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert("Withdrawal Rejected & Refunded");
+      setSelectedWithdraw(null);
+      fetchWithdraws();
+    } catch (err) {
+      alert("Reject failed");
+    }
+  };
 
   if (loading) {
-    return (
-      <div className="mt-8 mx-4">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">
-          Action Required for Pending Cashouts
-        </h2>
-        <div className="space-y-4">
-          {[1, 2, 3].map((_, idx) => (
-            <div
-              key={idx}
-              className="p-4 border rounded-lg bg-gray-200 animate-pulse flex justify-between"
-            >
-              <div className="space-y-2 w-full">
-                <div className="h-4 w-32 bg-gray-300 rounded"></div>
-                <div className="h-4 w-24 bg-gray-300 rounded"></div>
-                <div className="h-4 w-20 bg-gray-300 rounded"></div>
-              </div>
-              <div className="h-6 w-6 bg-gray-300 rounded"></div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
+    return <p className="p-4">Loading...</p>;
   }
 
   return (
     <div className="mt-8 mx-4">
-      <h2 className="text-xl font-bold text-gray-800 mb-4">
+      <h2 className="text-xl font-bold mb-4">
         Action Required for Pending Cashouts
       </h2>
 
       {pendingWithdraws.length === 0 ? (
-        <div className="text-center py-6 bg-gray-100 text-gray-700 rounded-md shadow-sm">
+        <div className="text-center py-6 bg-gray-100 rounded">
           No Withdrawal Requests Yet.
         </div>
       ) : (
-        <div className="flex flex-col gap-4">
-          {/* Large screens: Table */}
-          <div className="hidden lg:block overflow-x-auto">
-            <table className="min-w-full text-sm text-left text-gray-500">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-100">
-                <tr>
-                  <th className="px-6 py-3">Status</th>
-                  <th className="px-6 py-3">TXID</th>
-                  <th className="px-6 py-3">User</th>
-                  <th className="px-6 py-3">Method</th>
-                  <th className="px-6 py-3">Amount</th>
-                  <th className="px-6 py-3">Action</th>
+        <div className="hidden lg:block overflow-x-auto">
+          <table className="min-w-full text-sm text-left">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="px-4 py-2">TXID</th>
+                <th className="px-4 py-2">User</th>
+                <th className="px-4 py-2">Method</th>
+                <th className="px-4 py-2">Amount</th>
+                <th className="px-4 py-2">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pendingWithdraws.map((wd) => (
+                <tr key={wd._id} className="border-t">
+                  <td className="px-4 py-2">{wd.transactionId}</td>
+                  <td className="px-4 py-2">{wd.user?.name}</td>
+                  <td className="px-4 py-2">{wd.methodName}</td>
+                  <td className="px-4 py-2">{wd.amount}</td>
+                  <td className="px-4 py-2">
+                    <button
+                      onClick={() => setSelectedWithdraw(wd)}
+                      className="bg-blue-600 text-white px-3 py-1 rounded"
+                    >
+                      View
+                    </button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {pendingWithdraws.map((wd) => (
-                  <tr key={wd._id} className="hover:bg-gray-50">
-                    <td className="px-6 py-3">{wd.status}</td>
-                    <td className="px-6 py-3">{wd.transactionId || "N/A"}</td>
-                    <td className="px-6 py-3">{wd.user?.name || wd.user}</td>
-                    <td className="px-6 py-3">{wd.paymentApp || "N/A"}</td>
-                    <td className="px-6 py-3">{wd.amount}</td>
-                    <td className="px-6 py-3 flex gap-2">
-                      <button className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
-                        Approve
-                      </button>
-                      <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
-                        Reject
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
-          {/* Small screens: Card layout */}
-          <div className="lg:hidden flex flex-col gap-3">
-            {pendingWithdraws.map((wd) => (
-              <div key={wd._id} className="p-4 border rounded-lg bg-white shadow-sm flex flex-col gap-2">
-                <p><strong>Status:</strong> {wd.status}</p>
-                <p><strong>TXID:</strong> {wd.transactionId || "N/A"}</p>
-                <p><strong>User:</strong> {wd.user?.name || wd.user}</p>
-                <p><strong>Method:</strong> {wd.paymentApp || "N/A"}</p>
-                <p><strong>Amount:</strong> {wd.amount}</p>
-                <div className="flex gap-2 mt-2">
-                  <button className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
-                    Approve
-                  </button>
-                  <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
-                    Reject
-                  </button>
-                </div>
-              </div>
-            ))}
+      {/* MODAL */}
+      {selectedWithdraw && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-xl max-w-md w-full">
+            <h3 className="text-xl font-bold mb-4 text-center">
+              Withdrawal Details
+            </h3>
+
+            <div className="space-y-2 text-sm">
+              <p><strong>User:</strong> {selectedWithdraw.user?.name}</p>
+              <p><strong>Wallet:</strong> {selectedWithdraw.fromWallet}</p>
+              <p><strong>Amount:</strong> {selectedWithdraw.amount}</p>
+              <p><strong>Method:</strong> {selectedWithdraw.methodName}</p>
+              <p><strong>Holder Name:</strong> {selectedWithdraw.holderName}</p>
+              <p><strong>Account Number:</strong> {selectedWithdraw.accountNumber}</p>
+              <p><strong>TXID:</strong> {selectedWithdraw.transactionId}</p>
+              <p><strong>Status:</strong> {selectedWithdraw.status}</p>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={handleApprove}
+                className="flex-1 bg-green-600 text-white py-2 rounded"
+              >
+                Approve
+              </button>
+              <button
+                onClick={handleReject}
+                className="flex-1 bg-red-600 text-white py-2 rounded"
+              >
+                Reject
+              </button>
+            </div>
+
+            <button
+              onClick={() => setSelectedWithdraw(null)}
+              className="mt-4 w-full bg-gray-400 text-white py-2 rounded"
+            >
+              Close
+            </button>
           </div>
         </div>
       )}

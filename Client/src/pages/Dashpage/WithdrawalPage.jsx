@@ -9,6 +9,7 @@ const WithdrawalPage = () => {
   const [methods, setMethods] = useState([]);
   const [selectedMethod, setSelectedMethod] = useState("");
   const [holderName, setHolderName] = useState("");
+  const [accountNumber, setAccountNumber] = useState(""); // ✅ new state
   const [amount, setAmount] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -46,26 +47,26 @@ const WithdrawalPage = () => {
     );
   }
 
-  
   const afterFeeAmount = amount && !isNaN(amount) ? (parseFloat(amount) * 0.99).toFixed(2) : "0.00";
 
   const handleWithdraw = () => {
     if (!amount || isNaN(amount) || amount <= 0) return alert("Enter a valid amount");
     if (amount > user.wallet[wallet]) return alert(`Insufficient ${wallet} balance`);
     if (!holderName) return alert("Holder name is required");
+    if (!accountNumber) return alert("Account number is required"); // ✅ validation
     setModalOpen(true);
   };
 
   const confirmWithdraw = async () => {
     try {
-      
       await axios.post(
         `${URL}/transactions/withdraw`,
         {
           wallet,
-          methodId: selectedMethod,
-          amount: parseFloat(amount), 
+          methodName: selectedMethod,
+          amount: parseFloat(amount),
           holderName,
+          accountNumber, 
         },
         authHeaders
       );
@@ -73,6 +74,7 @@ const WithdrawalPage = () => {
       alert(`Withdrawal submitted! You will receive ${afterFeeAmount} ${wallet}`);
       setAmount("");
       setHolderName("");
+      setAccountNumber(""); 
       setModalOpen(false);
 
       const res = await axios.get(`${URL}/user-data/balance`, authHeaders);
@@ -100,6 +102,7 @@ const WithdrawalPage = () => {
             <li>Select wallet and withdrawal method.</li>
             <li>Enter amount to withdraw.</li>
             <li>Holder Name is <strong>mandatory</strong>.</li>
+            <li>Account Number is <strong>mandatory</strong>.</li> {/* ✅ instruction */}
             <li>1% fee applies on all withdrawals (calculated automatically).</li>
           </ul>
         </div>
@@ -149,6 +152,18 @@ const WithdrawalPage = () => {
             />
           </div>
 
+          {/* Account Number */}
+          <div>
+            <label className="text-white">Account Number</label>
+            <input
+              type="text"
+              placeholder="Enter account number"
+              value={accountNumber}
+              onChange={(e) => setAccountNumber(e.target.value)}
+              className="w-full mt-1 px-4 py-3 bg-blue-600 text-white border border-white rounded-lg placeholder-white"
+            />
+          </div>
+
           {/* Amount */}
           <div>
             <label className="text-white">Amount</label>
@@ -186,6 +201,7 @@ const WithdrawalPage = () => {
                 <p>Wallet: <strong>{wallet}</strong></p>
                 <p>Method: <strong>{methods.find(m => m._id === selectedMethod)?.name}</strong></p>
                 <p>Account Holder: <strong>{holderName}</strong></p>
+                <p>Account Number: <strong>{accountNumber}</strong></p> {/* ✅ show */}
                 <p>Amount: <strong>{afterFeeAmount} {wallet}</strong></p>
                 <p className="text-red-600 font-semibold">This action cannot be undone!</p>
               </div>

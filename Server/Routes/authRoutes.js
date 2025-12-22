@@ -9,9 +9,5 @@ authRouter.post("/register", Register);
 // Login route
 authRouter.post("/login", login);
 
-// admin login  
-
-// authRouter.post("/admin/login", login);
-
 
 export default authRouter;

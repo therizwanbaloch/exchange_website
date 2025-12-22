@@ -102,57 +102,58 @@ export const createDeposit = async (req, res) => {
   }
 };
 
-// Withdraw 
-
+// withdraw 
 export const withdraw = async (req, res) => {
   try {
-    const { wallet, methodId, amount, holderName } = req.body;
     const userId = req.user.id; 
+    const { wallet, methodName, amount, holderName, accountNumber } = req.body;
 
-    if (!wallet || !amount || !holderName || !methodId) {
-      return res.status(400).json({ success: false, message: "All fields are required" });
+    if (!wallet || !amount || amount <= 0) {
+      return res.status(400).json({ success: false, message: "Invalid data" });
     }
 
     const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ success: false, message: "User not found" });
-
-    if (user.wallet[wallet] < amount) {
-      return res.status(400).json({ success: false, message: "Insufficient balance" });
+    if (!user || user.wallet[wallet] < amount) {
+      return res.status(400).json({
+        success: false,
+        message: "Insufficient balance",
+      });
     }
+
+    
+    const fee = amount * 0.01;
+    const finalAmount = amount - fee;
 
     
     user.wallet[wallet] -= amount;
     await user.save();
 
-    
-    const afterFeeAmount = parseFloat((amount * 0.99).toFixed(2));
-
-    
-    const transaction = new Transaction({
-      user: user._id,
+    const transaction = await Transaction.create({
+      user: userId,
       type: "withdraw",
       fromWallet: wallet,
-      amount: amount, 
-      convertedAmount: afterFeeAmount, 
+      amount,
+      convertedAmount: finalAmount,
+      rate: 1,
+      transactionId: `WD-${Date.now()}`,
+      paymentApp: methodName,
       status: "pending",
-      paymentApp: methodId,
-      transactionId: "N/A", 
+      holderName,
+      accountNumber,
     });
 
-    await transaction.save();
-
-    res.status(200).json({
+    return res.status(201).json({
       success: true,
-      message: `Withdrawal submitted successfully! You will receive ${afterFeeAmount} ${wallet}`,
+      message: "Withdrawal request submitted",
       transaction,
-      balance: user.wallet,
     });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
+// Get all transactions
 
 export const getAllTransactions = async (req, res) => {
    try {

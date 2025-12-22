@@ -138,51 +138,56 @@ export const getAllTickets = async (req, res) => {
 
  // Approve Transaction
 
-export const approveTransaction = async (req, res) => {
+ export const approveTransaction = async (req, res) => {
   try {
     const { id } = req.params;
 
-    
     const transaction = await Transaction.findById(id);
     if (!transaction) {
       return res.status(404).json({ success: false, message: "Transaction not found" });
     }
 
-    
     if (transaction.status === "approved") {
       return res.status(400).json({ success: false, message: "Transaction already approved" });
     }
 
-    
     const user = await User.findById(transaction.user);
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-  
-    const currency = transaction.paymentApp;
-    if (!user.wallet[currency]) {
-      
+    
+    if (!user.wallet) {
+      user.wallet = {
+        PKR: 0,
+        USD: 0,
+        GBP: 0
+      };
+    }
+
+    const currency = transaction.paymentApp; 
+
+    
+    if (user.wallet[currency] === undefined) {
       user.wallet[currency] = 0;
     }
+
     user.wallet[currency] += transaction.amount;
 
-    
-    await user.save();
-
-    
     transaction.status = "approved";
+
+    await user.save();
     await transaction.save();
 
     return res.status(200).json({
       success: true,
-      message: "Transaction approved successfully and wallet updated",
-      transaction,
+      message: "Transaction approved successfully",
       wallet: user.wallet
     });
+
   } catch (error) {
     console.error("Error approving transaction:", error);
-    return res.status(500).json({ success: false, message: "Server error", error: error.message });
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
@@ -307,18 +312,61 @@ export const getAllWithdrawals = async (req, res) => {
 
 export const getPendingWithdraws = async (req, res) => {
   try {
-    const pendingWithdraws = await Transaction.find({
+    
+    const withdrawals = await Transaction.find({
       type: "withdraw",
-      status: "pending"
-    }).populate("user", "name email"); 
+      status: "pending",
+    })
+      .populate("user", "name email")
+      .sort({ createdAt: -1 });
 
-    res.json(pendingWithdraws);
-  } catch (err) {
-    console.error(err);
+    
+    const methodIds = withdrawals
+      .map((tx) => tx.paymentApp)
+      .filter(Boolean);
+
+    
+    const methods = await WithdrawalMethod.find({
+      _id: { $in: methodIds },
+    });
+
+    
+    const methodMap = {};
+    methods.forEach((m) => {
+      methodMap[m._id.toString()] = m.name;
+    });
+
+    
+    const response = withdrawals.map((tx) => ({
+      _id: tx._id,
+      transactionId: tx.transactionId,
+      status: tx.status,
+      amount: tx.amount,
+      fromWallet: tx.fromWallet,
+      createdAt: tx.createdAt,
+
+      user: {
+        _id: tx.user?._id,
+        name: tx.user?.name,
+        email: tx.user?.email,
+      },
+
+      holderName: tx.holderName || "N/A",
+      accountNumber: tx.accountNumber || "N/A",
+
+      
+      methodName:
+        tx.methodName ||
+        methodMap[tx.paymentApp] ||
+        "Unknown Method",
+    }));
+
+    res.json(response);
+  } catch (error) {
+    console.error("Pending withdraw fetch error:", error);
     res.status(500).json({ error: "Server error" });
   }
 };
-
 
 // get ticket details......
 
