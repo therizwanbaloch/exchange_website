@@ -1,0 +1,17 @@
+name: Ping Render Backend
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch: 
+
+jobs:
+  ping-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Random Delay and Ping
+        run: |
+          DELAY=$(( ( RANDOM % 60 ) + 1 ))
+          echo "Waiting $DELAY seconds..."
+          sleep $DELAY
+          curl -I https://pkrspot.onrender.com/health
