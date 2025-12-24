@@ -11,7 +11,10 @@ import UserDataCard from "./UsersDataCard";
 
 const FeaturesSection = () => {
   return (
-    <section id="features" className="bg-white py-20 px-6 sm:px-10 md:px-20 flex flex-col items-center">
+    <section
+      id="features"
+      className="bg-white py-20 px-6 sm:px-10 md:px-20 flex flex-col items-center"
+    >
       {/* Feature Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-14 w-full max-w-7xl">
         <Card
@@ -35,26 +38,37 @@ const FeaturesSection = () => {
 
       {/* User Data Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mt-12 w-full max-w-7xl">
-        <UserDataCard 
-          icon={<FaUsers className="text-6xl text-[#0D6EFD]" />}
-          title="Members"
-          usersData="700+"
-        />
-        <UserDataCard 
-          icon={<GiWallet className="text-6xl text-[#0D6EFD]" />}
-          title="Transactions"
-          usersData="1650+"
-        />
-        <UserDataCard 
-          icon={<FaMoneyBillTransfer className="text-6xl text-[#0D6EFD]" />}
-          title="Money Raised"
-          usersData="$4500+"
-        />
-        <UserDataCard 
-          icon={<TbTransactionDollar  className="text-6xl text-[#0D6EFD]" />}
-          title="Total Transactions"
-          usersData="$19250+"
-        />
+        <div className="w-full min-h-[220px] sm:min-h-[240px] flex">
+          <UserDataCard
+            icon={<FaUsers className="text-6xl text-[#0D6EFD]" />}
+            title="Members"
+            usersData="700+"
+          />
+        </div>
+
+        <div className="w-full min-h-[220px] sm:min-h-[240px] flex">
+          <UserDataCard
+            icon={<GiWallet className="text-6xl text-[#0D6EFD]" />}
+            title="Transactions"
+            usersData="1650+"
+          />
+        </div>
+
+        <div className="w-full min-h-[220px] sm:min-h-[240px] flex">
+          <UserDataCard
+            icon={<FaMoneyBillTransfer className="text-6xl text-[#0D6EFD]" />}
+            title="Money Raised"
+            usersData="$4500+"
+          />
+        </div>
+
+        <div className="w-full min-h-[220px] sm:min-h-[240px] flex">
+          <UserDataCard
+            icon={<TbTransactionDollar className="text-6xl text-[#0D6EFD]" />}
+            title="Total Transactions"
+            usersData="$19250+"
+          />
+        </div>
       </div>
     </section>
   );

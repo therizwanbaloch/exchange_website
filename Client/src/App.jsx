@@ -22,6 +22,8 @@ import ExchangePage from "./pages/Dashpage/ExchangePage";
 import WithdrawalPage from "./pages/Dashpage/WithdrawalPage";
 import AdminWithdrawalMethods from "./pages/admin/AdminWithdrawalMethods";
 import ProfilePage from "./pages/Dashpage/ProfilePage";
+import TermsOfService from "./pages/TermsOfService";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 
 const App = () => {
@@ -37,8 +39,11 @@ const App = () => {
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/terms" element={<TermsOfService />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
-      {/* NEW ADMIN LOGIN ROUTE */}
+      {/* admin login  */}
+
       <Route path="/admin-login" element={<AdminLogin />} />
 
       {/* User Protected Routes */}
