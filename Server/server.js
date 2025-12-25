@@ -21,7 +21,7 @@ app.use(
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
       if (
-        ["http://localhost:5174", "https://pkrspot.vercel.app"].includes(origin)
+        ["http://localhost:5173", "https://pkrspot.vercel.app"].includes(origin)
       ) {
         callback(null, true);
       } else {

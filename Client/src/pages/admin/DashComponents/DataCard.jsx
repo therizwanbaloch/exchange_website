@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 const DataCard = ({ text, number, bgColor = "bg-gray-200", Icon }) => {

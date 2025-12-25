@@ -11,8 +11,8 @@ const Deposits = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
   const [searchTxId, setSearchTxId] = useState("");
-  const URL = import.meta.env.VITE_API_URL;
 
+  const URL = import.meta.env.VITE_API_URL; // http://localhost:5000/api
   const token = localStorage.getItem("token");
 
   // Fetch paginated deposits
@@ -23,17 +23,18 @@ const Deposits = () => {
         params: { page, limit: 10 },
         headers: { Authorization: `Bearer ${token}` },
       });
-      setDeposits(res.data.deposits);
-      setCurrentPage(res.data.currentPage);
-      setTotalPages(res.data.totalPages);
+      setDeposits(res.data.deposits || []);
+      setCurrentPage(res.data.currentPage || 1);
+      setTotalPages(res.data.totalPages || 1);
     } catch (err) {
       console.error(err);
+      setDeposits([]);
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch deposit details by ID
+  // Fetch deposit details by ID (for modal)
   const fetchDepositDetails = async (id) => {
     setModalLoading(true);
     setModalOpen(true);
@@ -53,17 +54,26 @@ const Deposits = () => {
   // Search deposit by transaction ID
   const handleSearch = async () => {
     if (!searchTxId) return alert("Enter Transaction ID");
+
     setLoading(true);
     try {
-      const res = await axios.get(`${URL}/admin/deposit/tx/${searchTxId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setDeposits([res.data.deposit]);
-      setCurrentPage(1);
-      setTotalPages(1);
+      const res = await axios.post(
+        `${URL}/admin/transaction/details`,
+        { transactionId: searchTxId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (res.data?.success) {
+        setDeposits([res.data.deposit]);
+        setCurrentPage(1);
+        setTotalPages(1);
+      } else {
+        alert(res.data?.message || "No deposit found with this Transaction ID");
+        setDeposits([]);
+      }
     } catch (err) {
       console.error(err);
-      alert("No deposit found with this Transaction ID");
+      alert(err.response?.data?.message || "Server error. Please try again.");
       setDeposits([]);
     } finally {
       setLoading(false);
@@ -101,7 +111,7 @@ const Deposits = () => {
       await axios.post(`${URL}/admin/transaction/${id}/approve`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      alert("Deposit approved and user balance updated!");
+      alert("Deposit approved!");
       fetchDeposits(currentPage);
       setModalOpen(false);
     } catch (err) {
@@ -126,14 +136,16 @@ const Deposits = () => {
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
-      <aside className="w-full lg:w-64 bg-[#020c2c] text-white shadow-xl lg:fixed top-0 left-0 h-16 lg:h-full lg:block">
+      {/* Sidebar */}
+      <aside className="w-full lg:w-64 lg:fixed top-0 left-0 h-full bg-white shadow-xl">
         <AdminScrollBar />
       </aside>
 
+      {/* Main content */}
       <main className="flex-1 lg:ml-64 p-4 lg:p-6 w-full">
         <h1 className="text-2xl font-bold text-gray-800 mb-6">Manage Deposits</h1>
 
-        {/* Search by Transaction ID */}
+        {/* Search */}
         <div className="flex gap-2 mb-4">
           <input
             type="text"
@@ -156,11 +168,14 @@ const Deposits = () => {
           </button>
         </div>
 
+        {/* Deposits Table */}
         <div className="bg-white rounded-lg shadow-md p-4 overflow-x-auto">
           {loading ? (
             <div className="flex justify-center items-center py-10">
               <div className="w-10 h-10 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
             </div>
+          ) : deposits.length === 0 ? (
+            <p className="text-center py-6 text-gray-600">No deposits available.</p>
           ) : (
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
@@ -173,9 +188,9 @@ const Deposits = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-100">
-                {deposits.map((dep, index) => (
-                  <tr key={dep._id} className={index % 2 === 0 ? "bg-gray-50 hover:bg-gray-100" : "bg-white hover:bg-gray-100"}>
-                    <td className="px-6 py-4">{dep.user.email}</td>
+                {deposits.map((dep, idx) => (
+                  <tr key={dep._id} className={idx % 2 === 0 ? "bg-gray-50 hover:bg-gray-100" : "bg-white hover:bg-gray-100"}>
+                    <td className="px-6 py-4">{dep.user?.email || dep.user?.name}</td>
                     <td className="px-6 py-4">{dep.amount}</td>
                     <td className="px-6 py-4">{new Date(dep.createdAt).toLocaleDateString()}</td>
                     <td className="px-6 py-4">
@@ -225,7 +240,7 @@ const Deposits = () => {
           )}
         </div>
 
-        {/* Glassy Modal */}
+        {/* Modal */}
         {modalOpen && (
           <div className="fixed inset-0 flex items-center justify-center z-50">
             <div
@@ -248,34 +263,31 @@ const Deposits = () => {
                 <>
                   <h2 className="text-xl font-bold mb-4">Deposit Details</h2>
                   <div className="space-y-3">
-                    <p><span className="font-semibold">User:</span> {selectedDeposit.user.email}</p>
-                    <p><span className="font-semibold">Amount:</span> {selectedDeposit.amount}</p>
-                    <p><span className="font-semibold">Status:</span> <span className={getStatusClasses(selectedDeposit.status)}>{selectedDeposit.status}</span></p>
-                    <p><span className="font-semibold">Date:</span> {new Date(selectedDeposit.createdAt).toLocaleString()}</p>
-                    {selectedDeposit.paymentApp && <p><span className="font-semibold">Payment App:</span> {selectedDeposit.paymentApp}</p>}
-                    {selectedDeposit.transactionId && <p><span className="font-semibold">Transaction ID:</span> {selectedDeposit.transactionId}</p>}
-                    {selectedDeposit.notes && <p><span className="font-semibold">Notes:</span> {selectedDeposit.notes}</p>}
+                    <p><strong>User:</strong> {selectedDeposit.user?.email || selectedDeposit.user?.name}</p>
+                    <p><strong>Amount:</strong> {selectedDeposit.amount}</p>
+                    <p><strong>Status:</strong> <span className={getStatusClasses(selectedDeposit.status)}>{selectedDeposit.status}</span></p>
+                    <p><strong>Date:</strong> {new Date(selectedDeposit.createdAt).toLocaleString()}</p>
+                    {selectedDeposit.paymentApp && <p><strong>Payment App:</strong> {selectedDeposit.paymentApp}</p>}
+                    {selectedDeposit.transactionId && <p><strong>Transaction ID:</strong> {selectedDeposit.transactionId}</p>}
+                    {selectedDeposit.notes && <p><strong>Notes:</strong> {selectedDeposit.notes}</p>}
                   </div>
 
-                  {/* Approve / Reject Buttons */}
-                  <div className="flex justify-end gap-3 mt-6">
-                    {selectedDeposit.status === "pending" && (
-                      <>
-                        <button
-                          onClick={() => approveDeposit(selectedDeposit._id)}
-                          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-                        >
-                          Approve
-                        </button>
-                        <button
-                          onClick={() => rejectDeposit(selectedDeposit._id)}
-                          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                        >
-                          Reject
-                        </button>
-                      </>
-                    )}
-                  </div>
+                  {selectedDeposit.status === "pending" && (
+                    <div className="flex justify-end gap-3 mt-6">
+                      <button
+                        onClick={() => approveDeposit(selectedDeposit._id)}
+                        className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                      >
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => rejectDeposit(selectedDeposit._id)}
+                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  )}
                 </>
               ) : (
                 <p className="text-center text-red-500">Failed to load deposit details.</p>

@@ -552,20 +552,27 @@ export const getDepositById = async (req, res) => {
   }
 };
 
+// search transaction by trx id 
 
-export const getDepositByTransactionId = async (req, res) => {
+export const getTransactionByTransactionId = async (req, res) => {
   try {
-    const { transactionId } = req.params;
+    const { transactionId } = req.body;
+
+    if (!transactionId || transactionId.trim() === "") {
+      return res.status(400).json({
+        success: false,
+        message: "Transaction ID is required",
+      });
+    }
 
     const deposit = await Transaction.findOne({
-      transactionId,
-      type: "deposit",
+      transactionId: { $regex: `^${transactionId.trim()}$`, $options: "i" }, 
     }).populate("user", "name email");
 
     if (!deposit) {
       return res.status(404).json({
         success: false,
-        message: "No deposit found with this transaction ID",
+        message: "No transaction found with this Transaction ID",
       });
     }
 
@@ -574,7 +581,7 @@ export const getDepositByTransactionId = async (req, res) => {
       deposit,
     });
   } catch (err) {
-    console.error("Error finding deposit by transaction ID:", err);
+    console.log("Error finding transaction by Transaction ID:", err);
     return res.status(500).json({
       success: false,
       message: "Server error",

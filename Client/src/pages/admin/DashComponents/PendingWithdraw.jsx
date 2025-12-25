@@ -58,62 +58,93 @@ const PendingWithdraw = () => {
   };
 
   if (loading) {
-    return <p className="p-4">Loading...</p>;
+    return (
+      <div className="mt-8 px-4 sm:px-6 md:px-8 animate-pulse">
+        <h2 className="h-8 bg-gray-300 rounded w-1/3 mb-4"></h2>
+        <div className="space-y-3">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-24 bg-gray-200 rounded"></div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="mt-8 mx-4">
-      <h2 className="text-xl font-bold mb-4">
-        Action Required for Pending Cashouts
-      </h2>
+    <div className="mt-8 px-4 sm:px-6 md:px-8">
+      <h2 className="text-xl font-bold mb-4">Pending Withdrawals</h2>
 
       {pendingWithdraws.length === 0 ? (
-        <div className="text-center py-6 bg-gray-100 rounded">
-          No Withdrawal Requests Yet.
+        <div className="text-center py-12 bg-gray-100 rounded w-full overflow-x-auto">
+          <p className="text-gray-700 text-lg">No Withdrawal Requests Yet.</p>
         </div>
       ) : (
-        <div className="hidden lg:block overflow-x-auto">
-          <table className="min-w-full text-sm text-left">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-4 py-2">TXID</th>
-                <th className="px-4 py-2">User</th>
-                <th className="px-4 py-2">Method</th>
-                <th className="px-4 py-2">Amount</th>
-                <th className="px-4 py-2">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pendingWithdraws.map((wd) => (
-                <tr key={wd._id} className="border-t">
-                  <td className="px-4 py-2">{wd.transactionId}</td>
-                  <td className="px-4 py-2">{wd.user?.name}</td>
-                  <td className="px-4 py-2">{wd.methodName}</td>
-                  <td className="px-4 py-2">{wd.amount}</td>
-                  <td className="px-4 py-2">
-                    <button
-                      onClick={() => setSelectedWithdraw(wd)}
-                      className="bg-blue-600 text-white px-3 py-1 rounded"
-                    >
-                      View
-                    </button>
-                  </td>
+        <>
+          {/* Desktop Table */}
+          <div className="hidden lg:block w-full overflow-x-auto">
+            <table className="min-w-full text-sm text-left border border-gray-200">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="px-6 py-3">TXID</th>
+                  <th className="px-6 py-3">User</th>
+                  <th className="px-6 py-3">Method</th>
+                  <th className="px-6 py-3">Amount</th>
+                  <th className="px-6 py-3">Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {pendingWithdraws.map((wd) => (
+                  <tr key={wd._id} className="border-t">
+                    <td className="px-6 py-3">{wd.transactionId}</td>
+                    <td className="px-6 py-3">{wd.user?.name}</td>
+                    <td className="px-6 py-3">{wd.methodName}</td>
+                    <td className="px-6 py-3">{wd.amount}</td>
+                    <td className="px-6 py-3">
+                      <button
+                        onClick={() => setSelectedWithdraw(wd)}
+                        className="bg-blue-600 text-white px-3 py-1 rounded"
+                      >
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Cards */}
+          <div className="lg:hidden flex flex-col gap-3 w-full overflow-x-auto">
+            {pendingWithdraws.map((wd) => (
+              <div
+                key={wd._id}
+                className="p-4 bg-white rounded shadow flex flex-col gap-2 w-full"
+              >
+                <p><strong>TXID:</strong> {wd.transactionId}</p>
+                <p><strong>User:</strong> {wd.user?.name}</p>
+                <p><strong>Method:</strong> {wd.methodName}</p>
+                <p><strong>Amount:</strong> {wd.amount}</p>
+                <button
+                  onClick={() => setSelectedWithdraw(wd)}
+                  className="mt-2 bg-blue-600 text-white px-3 py-1 rounded w-max"
+                >
+                  View
+                </button>
+              </div>
+            ))}
+          </div>
+        </>
       )}
 
-      {/* MODAL */}
+      {/* Modal */}
       {selectedWithdraw && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-auto">
           <div className="bg-white p-6 rounded-xl max-w-md w-full">
             <h3 className="text-xl font-bold mb-4 text-center">
               Withdrawal Details
             </h3>
 
-            <div className="space-y-2 text-sm">
+            <div className="space-y-2 text-sm overflow-x-auto">
               <p><strong>User:</strong> {selectedWithdraw.user?.name}</p>
               <p><strong>Wallet:</strong> {selectedWithdraw.fromWallet}</p>
               <p><strong>Amount:</strong> {selectedWithdraw.amount}</p>
@@ -124,7 +155,7 @@ const PendingWithdraw = () => {
               <p><strong>Status:</strong> {selectedWithdraw.status}</p>
             </div>
 
-            <div className="flex gap-3 mt-6">
+            <div className="flex gap-3 mt-6 flex-col sm:flex-row">
               <button
                 onClick={handleApprove}
                 className="flex-1 bg-green-600 text-white py-2 rounded"

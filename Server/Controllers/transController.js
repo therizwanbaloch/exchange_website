@@ -210,12 +210,13 @@ export const recentTransactions = async (req, res) => {
 
 // get transaction details
 
-export const getDepositById = async (req, res) => {
+export const getTransactionById = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { transactionId } = req.params;
 
-    
-    const deposit = await Transaction.findById(id).populate("user", "email name");
+    const deposit = await Transaction.findOne({
+      transactionId: { $regex: `^${transactionId.trim()}$`, $options: "i" },
+    }).populate("user", "email name");
 
     if (!deposit) {
       return res.status(404).json({ message: "Deposit not found" });
@@ -223,10 +224,12 @@ export const getDepositById = async (req, res) => {
 
     res.status(200).json({ deposit });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    console.log(err);
+    res.status(500).json({ message: "Server error"});
   }
 };
+
+
 
 // Get conversion amount
 

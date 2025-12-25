@@ -67,7 +67,6 @@ const ManageUsers = () => {
     }
   };
 
-  // Initial fetch & whenever page changes
   useEffect(() => {
     fetchUsers(currentPage);
   }, [currentPage]);
@@ -82,11 +81,9 @@ const ManageUsers = () => {
 
   return (
     <div className="flex min-h-screen bg-blue-200/50">
-
-      {/* Sidebar */}
-      <aside className="w-64 bg-[#020c2c] text-white fixed top-0 left-0 h-full shadow-xl hidden lg:block">
-        <AdminScrollBar />
-      </aside>
+      
+      {/* Sidebar with built-in mobile hamburger */}
+      <AdminScrollBar />
 
       {/* Main Content */}
       <main className="flex-1 lg:ml-64 p-6 space-y-8 w-full">

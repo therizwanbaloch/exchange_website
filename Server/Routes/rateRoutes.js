@@ -7,7 +7,7 @@ import { isAdmin } from "../Middlewares/isAdmin.js";
 const rateRouter = express.Router();
 
 
-rateRouter.get("/get-rates",isAuth, getRates);
+rateRouter.get("/get-rates" ,getRates);
 rateRouter.post("/add-rate", isAdmin, createRate);
 rateRouter.put("/edit-rate/:id", isAdmin, updateRate);
 rateRouter.delete("/delete-rate/:id", isAdmin, deleteRate);

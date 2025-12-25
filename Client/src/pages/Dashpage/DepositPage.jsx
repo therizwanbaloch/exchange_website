@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { FiCopy } from "react-icons/fi";
 import DashboardSidebar from "../Dashpage/Dashtab Components/DashboardSidebar";
 import DashboardNav from "../Dashpage/Dashtab Components/DashboardNav";
 
@@ -13,6 +14,7 @@ const DepositPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [amount, setAmount] = useState("");
   const [transactionId, setTransactionId] = useState("");
+  const [toastVisible, setToastVisible] = useState(false);
 
   const URL = import.meta.env.VITE_API_URL;
   const token = localStorage.getItem("token");
@@ -66,6 +68,15 @@ const DepositPage = () => {
     }
   };
 
+  // Copy wallet address to clipboard
+  const handleCopyAddress = () => {
+    if (selectedMethod?.address) {
+      navigator.clipboard.writeText(selectedMethod.address);
+      setToastVisible(true);
+      setTimeout(() => setToastVisible(false), 1000); // disappear after 1s
+    }
+  };
+
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
       {/* Sidebar */}
@@ -75,18 +86,26 @@ const DepositPage = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        {/* Navbar */}
         <DashboardNav />
 
-        {/* Deposit Content */}
         <div className="p-5 lg:p-10 flex-1">
           <h1 className="text-3xl font-bold text-blue-700 mb-8 text-center">
             Available Deposit Methods
           </h1>
 
-          {/* Loading / Empty */}
+          {/* Loading Skeleton */}
           {loading ? (
-            <p className="text-center text-gray-600">Loading methods...</p>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {[1, 2, 3, 4].map((i) => (
+                <div
+                  key={i}
+                  className="animate-pulse p-6 bg-white rounded-2xl shadow space-y-3"
+                >
+                  <div className="h-5 bg-gray-300 rounded w-1/2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-full"></div>
+                </div>
+              ))}
+            </div>
           ) : methods.length === 0 ? (
             <p className="text-center text-gray-600">No deposit methods found.</p>
           ) : (
@@ -106,11 +125,29 @@ const DepositPage = () => {
 
           {/* Details Panel */}
           {detailsOpen && selectedMethod && (
-            <div className="mt-10 p-6 bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-blue-100 max-w-xl mx-auto animate-fadeIn">
-              <h2 className="text-2xl font-bold text-blue-700">{selectedMethod.gateway}</h2>
+            <div className="mt-10 p-6 bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-blue-100 max-w-xl mx-auto">
+              <h2 className="text-2xl font-bold text-blue-700">
+                {selectedMethod.gateway}
+              </h2>
+
               <p className="mt-2"><strong>Currency:</strong> {selectedMethod.currency}</p>
-              <p><strong>Address:</strong> {selectedMethod.address}</p>
-              <p><strong>Instructions:</strong> {selectedMethod.instructions}</p>
+
+              {/* Address with overflow fix + copy icon */}
+              <div className="mt-2">
+                <strong>Address:</strong>
+                <div className="mt-1 flex gap-2 items-start bg-gray-100 p-3 rounded-lg">
+                  <p className="text-sm break-all flex-1 max-w-full">
+                    {selectedMethod.address}
+                  </p>
+                  <FiCopy
+                    className="text-gray-500 text-lg cursor-pointer hover:text-blue-600 flex-shrink-0"
+                    title="Copy address"
+                    onClick={handleCopyAddress}
+                  />
+                </div>
+              </div>
+
+              <p className="mt-2"><strong>Instructions:</strong> {selectedMethod.instructions}</p>
               <p><strong>Min:</strong> {selectedMethod.minAmount}</p>
               <p><strong>Max:</strong> {selectedMethod.maxAmount}</p>
 
@@ -131,16 +168,18 @@ const DepositPage = () => {
             </div>
           )}
 
-          {/* Glassy Modal */}
+          {/* Modal */}
           {modalOpen && (
-            <div className="fixed inset-0 flex items-center justify-center z-50">
+            <div className="fixed inset-0 flex items-center justify-center z-50 px-4">
               <div
                 className="absolute inset-0 backdrop-blur-md bg-black/30"
                 onClick={() => setModalOpen(false)}
               ></div>
 
-              <div className="relative bg-white/90 backdrop-blur-md w-full max-w-md p-8 rounded-2xl shadow-2xl border border-blue-100 animate-scaleUp">
-                <h2 className="text-2xl font-bold mb-4 text-blue-700 text-center">Create Deposit</h2>
+              <div className="relative bg-white/90 backdrop-blur-md w-full max-w-md p-8 rounded-2xl shadow-2xl border border-blue-100">
+                <h2 className="text-2xl font-bold mb-4 text-blue-700 text-center">
+                  Create Deposit
+                </h2>
 
                 <input
                   value={selectedMethod.gateway}
@@ -186,6 +225,13 @@ const DepositPage = () => {
                   </button>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Toast notification */}
+          {toastVisible && (
+            <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-6 py-2 rounded-lg shadow-lg animate-fadeInOut">
+              Address copied!
             </div>
           )}
         </div>

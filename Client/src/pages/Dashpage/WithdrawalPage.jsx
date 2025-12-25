@@ -9,7 +9,7 @@ const WithdrawalPage = () => {
   const [methods, setMethods] = useState([]);
   const [selectedMethod, setSelectedMethod] = useState("");
   const [holderName, setHolderName] = useState("");
-  const [accountNumber, setAccountNumber] = useState(""); // ✅ new state
+  const [accountNumber, setAccountNumber] = useState(""); 
   const [amount, setAmount] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -40,9 +40,21 @@ const WithdrawalPage = () => {
   }, []);
 
   if (loading) {
+    // ✅ Skeleton loader instead of "Loading wallet..."
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <p className="text-gray-600 text-lg">Loading wallet...</p>
+      <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100 p-5 gap-5">
+        {/* Sidebar skeleton */}
+        <div className="lg:w-64 w-full animate-pulse mb-4 lg:mb-0">
+          <div className="bg-gray-300 h-96 rounded-lg"></div>
+        </div>
+
+        {/* Main content skeleton */}
+        <div className="flex-1 flex flex-col gap-4">
+          <div className="h-12 bg-gray-300 rounded-lg w-full animate-pulse"></div>
+          <div className="h-32 bg-gray-300 rounded-lg w-full animate-pulse"></div>
+          <div className="h-64 bg-gray-300 rounded-3xl w-full animate-pulse"></div>
+          <div className="h-12 bg-gray-300 rounded-lg w-full animate-pulse"></div>
+        </div>
       </div>
     );
   }
@@ -53,7 +65,7 @@ const WithdrawalPage = () => {
     if (!amount || isNaN(amount) || amount <= 0) return alert("Enter a valid amount");
     if (amount > user.wallet[wallet]) return alert(`Insufficient ${wallet} balance`);
     if (!holderName) return alert("Holder name is required");
-    if (!accountNumber) return alert("Account number is required"); // ✅ validation
+    if (!accountNumber) return alert("Account number is required"); 
     setModalOpen(true);
   };
 
@@ -102,7 +114,7 @@ const WithdrawalPage = () => {
             <li>Select wallet and withdrawal method.</li>
             <li>Enter amount to withdraw.</li>
             <li>Holder Name is <strong>mandatory</strong>.</li>
-            <li>Account Number is <strong>mandatory</strong>.</li> {/* ✅ instruction */}
+            <li>Account Number is <strong>mandatory</strong>.</li>
             <li>1% fee applies on all withdrawals (calculated automatically).</li>
           </ul>
         </div>
@@ -201,7 +213,7 @@ const WithdrawalPage = () => {
                 <p>Wallet: <strong>{wallet}</strong></p>
                 <p>Method: <strong>{methods.find(m => m._id === selectedMethod)?.name}</strong></p>
                 <p>Account Holder: <strong>{holderName}</strong></p>
-                <p>Account Number: <strong>{accountNumber}</strong></p> {/* ✅ show */}
+                <p>Account Number: <strong>{accountNumber}</strong></p>
                 <p>Amount: <strong>{afterFeeAmount} {wallet}</strong></p>
                 <p className="text-red-600 font-semibold">This action cannot be undone!</p>
               </div>
